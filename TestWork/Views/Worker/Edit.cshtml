@@ -1,0 +1,56 @@
+﻿@model Worker
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="Worker" asp-action="Edit" method="post">
+        <a type="button" asp-controller="Worker" asp-action="List" class="close">X</a>
+        <h2>
+            Добавление сотрудника
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите фамилию работника*</span>
+                <input hidden asp-for="Id" type="text" value="@Model.Id" />
+                <input required asp-for="LastName" type="text" placeholder="Фамилия:" value="@Model.LastName" />
+                @Html.ValidationMessageFor(model => model.LastName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите имя работника*</span>
+                <input required asp-for="FirstName" type="text" placeholder="Имя:" value="@Model.FirstName" />
+                @Html.ValidationMessageFor(model => model.FirstName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите отчество работника*</span>
+                <input required asp-for="MiddleName" type="text" placeholder="Отчество:" value="@Model.MiddleName" />
+                @Html.ValidationMessageFor(model => model.MiddleName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите дату принятия на работу*</span>
+                @{
+                    string mydate = "";                    
+                     mydate = DateTime.Parse($"{Model.DateEmployment}").ToString("yyyy-MM-dd"); 
+                }
+                <input required asp-for="DateEmployment" type="date" placeholder="Дата принятия на работу:" value="@mydate" />
+                @Html.ValidationMessageFor(model => model.DateEmployment, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Выберите должность*</span>
+                <select required asp-for="PositionId" asp-items="ViewBag.Positions" value="@Model.Position?.Name"></select>
+                @Html.ValidationMessageFor(model => model.PositionId, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Выберите команию*</span>
+                <select required asp-for="CompanyId" asp-items="ViewBag.Companies" value="@Model.Company?.Name"></select>
+                @Html.ValidationMessageFor(model => model.CompanyId, null, new { style = "color:red" })
+            </li>
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Изменить</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+            <a class="btn btn-danger" asp-controller="Worker" asp-action="Delete" asp-route-id=@Model.Id><div>Удалить</div></a>
+        </div>
+    </form>
+</div>

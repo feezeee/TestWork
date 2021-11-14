@@ -1,0 +1,38 @@
+﻿@model Company
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="Company" asp-action="Edit" method="post">
+        <a type="button" asp-controller="Company" asp-action="List" class="close">X</a>
+        <h2>
+            Редактирование компании
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите индентификатор компании*</span>
+                <input hidden name="preId" value="@Model.Id" />
+                <input required asp-for="Id" type="text" placeholder="Индентификатор:" />
+                @Html.ValidationMessageFor(model => model.Id, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите наименование компании*</span>
+                <input required asp-for="Name" type="text" placeholder="Наименование компании:" value="@Model.Name"/>
+            </li>
+            <li>
+                <span>Выберите организационно-правовую форму*</span>
+                <select required asp-for="FormTypeId" asp-items="ViewBag.FormTypes" value="@Model.FormType?.Name"></select>
+            </li>
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Изменить</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+            @if (Model.Workers?.Count == 0)
+            {
+                <a class="btn btn-danger" asp-controller="Company" asp-action="Delete" asp-route-id=@Model.Id><div>Удалить</div></a>
+            }
+        </div>
+    </form>
+</div>

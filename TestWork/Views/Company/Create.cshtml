@@ -1,0 +1,35 @@
+﻿@model Company
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="Company" asp-action="Create" method="post">
+        <a type="button" asp-controller="Company" asp-action="List" class="close">X</a>
+        <h2>
+            Добавление компании
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите индентификатор компании*</span>
+                <input required asp-for="Id" type="text" placeholder="Индентификатор:" />
+                @Html.ValidationMessageFor(model => model.Id, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите наименование компании*</span>
+                <input required asp-for="Name" type="text" placeholder="Наименование компании:" />
+                @Html.ValidationMessageFor(model => model.Name, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Выберите организационно-правовую форму*</span>
+                <select required asp-for="FormTypeId" asp-items="ViewBag.FormTypes"></select>
+                @Html.ValidationMessageFor(model => model.FormTypeId, null, new { style = "color:red" })
+            </li>
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Сохранить</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+        </div>
+    </form>
+</div>

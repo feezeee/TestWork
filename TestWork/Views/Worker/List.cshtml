@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Worker>
+@{
+    Layout = "_Layout";
+}
+<div class="workerList table-responsive">
+    <form name="find" method="get" asp-controller="Worker" asp-action="List" class="param_workers">
+
+        <input class="form-control" name="worker.Id" type="text" placeholder="Id работника:" />
+        <input class="form-control" name="worker.LastName" type="text" placeholder="Фамилия работника:" />
+        <input class="form-control" name="worker.FirstName" type="text" placeholder="Имя работника:" />
+        <input class="form-control" name="worker.MiddleName" type="text" placeholder="Отчество:" />
+        <div class="findbutton">
+            <button class="btn btn-success" type="submit">
+                Поиск
+            </button>
+        </div>
+    </form>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Фамилия</th>
+                <th class="text-center" scope="col">Имя</th>
+                <th class="text-center" scope="col">Отчество</th>
+                <th class="text-center" scope="col">Дата приема на работу</th>
+                <th class="text-center" scope="col">Должность</th>
+                <th class="text-center" scope="col">Компания</th>
+            </tr>
+        </thead>
+        <tbody id="editWorker">
+            @foreach (var worker in Model)
+            {
+                <tr class="editRow">
+                    <th class="rowId">@worker.Id</th>
+                    <td class="text-center">@worker.LastName</td>
+                    <td class="text-center">@worker.FirstName</td>
+                    <td class="text-center">@worker.MiddleName</td>
+                    <td class="text-center">@worker.DateEmployment.ToShortDateString()</td>
+                    <td class="text-center">@worker.Position?.Name</td>
+                    <td class="text-center">@worker.Company?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

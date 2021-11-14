@@ -1,0 +1,50 @@
+﻿@model Worker
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="Worker" asp-action="Create" method="post">
+        <a type="button" asp-controller="Worker" asp-action="List" class="close">X</a>
+        <h2>
+            Добавление сотрудника
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите фамилию работника*</span>
+                <input required asp-for="LastName" type="text" placeholder="Фамилия:" />
+                @Html.ValidationMessageFor(model => model.LastName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите имя работника*</span>
+                <input required asp-for="FirstName" type="text" placeholder="Имя:" />
+                @Html.ValidationMessageFor(model => model.FirstName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите отчество работника*</span>
+                <input required asp-for="MiddleName" type="text" placeholder="Отчество:" />
+                @Html.ValidationMessageFor(model => model.MiddleName, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Введите дату принятия на работу*</span>
+                <input required asp-for="DateEmployment" type="date" placeholder="Дата принятия на работу:" />
+                @Html.ValidationMessageFor(model => model.DateEmployment, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Выберите должность*</span>
+                <select required asp-for="PositionId" asp-items="ViewBag.Positions"></select>
+                @Html.ValidationMessageFor(model => model.PositionId, null, new { style = "color:red" })
+            </li>
+            <li>
+                <span>Выберите команию*</span>
+                <select required asp-for="CompanyId" asp-items="ViewBag.Companies"></select>
+                @Html.ValidationMessageFor(model => model.CompanyId, null, new { style = "color:red" })
+            </li>
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Создать</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+        </div>
+    </form>
+</div>

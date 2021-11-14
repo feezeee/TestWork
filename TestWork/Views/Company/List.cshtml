@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Company>
+@{
+    Layout = "_Layout";
+}
+<div class="workerList table-responsive">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Наименование</th>
+                <th class="text-center" scope="col">Размер компании</th>
+                <th class="text-center" scope="col">Организационно-правовая форма</th>
+            </tr>
+        </thead>
+        <tbody id="editCompany">
+            @foreach (var company in Model)
+            {
+                <tr class="editRow">
+                    <th class="rowId">@company.Id</th>
+                    <td class="text-center">@company.Name</td>
+                    <td class="text-center">@company.Workers?.Count()</td>
+                    <td class="text-center">@company.FormType.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
