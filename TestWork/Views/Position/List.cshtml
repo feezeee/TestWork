@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Position>
+@{
+    Layout = "_Layout";
+}
+<div class="workerList table-responsive">
+    <form name="find" method="get" asp-controller="Position" asp-action="List" class="param_workers">
+        <input class="form-control" name="position.Id" type="text" placeholder="Id должности:" />
+        <input class="form-control" name="position.Name" type="text" placeholder="Наименование должности:" />
+        <div class="findbutton">
+            <button class="btn btn-success" type="submit">
+                Поиск
+            </button>
+        </div>
+    </form>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Наименование</th>
+            </tr>
+        </thead>
+        <tbody id="editPosition">
+            @foreach (var position in Model)
+            {
+                <tr class="editRow">
+                    <th class="rowId text-center">@position.Id</th>
+                    <td class="text-center">@position.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -3,6 +3,15 @@
     Layout = "_Layout";
 }
 <div class="workerList table-responsive">
+    <form name="find" method="get" asp-controller="Company" asp-action="List" class="param_workers">
+        <input class="form-control" name="company.Id" type="text" placeholder="Id должности:" />
+        <input class="form-control" name="company.Name" type="text" placeholder="Наименование компании:" />
+        <div class="findbutton">
+            <button class="btn btn-success" type="submit">
+                Поиск
+            </button>
+        </div>
+    </form>
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -16,7 +25,7 @@
             @foreach (var company in Model)
             {
                 <tr class="editRow">
-                    <th class="rowId">@company.Id</th>
+                    <th class="rowId text-center">@company.Id</th>
                     <td class="text-center">@company.Name</td>
                     <td class="text-center">@company.Workers?.Count()</td>
                     <td class="text-center">@company.FormType.Name</td>

@@ -1,0 +1,18 @@
+﻿@model Position
+@{
+    Layout = "_Layout";
+
+}
+<div class="divforDelete">
+    <form class="FormForDelete" asp-controller="Position" asp-action="Delete" method="post">
+        <h2>
+            Вы уверены, что хотите удалить должность?
+        </h2>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Да</button>
+
+            <a class="btn btn-danger" asp-controller="Position" asp-action="Edit" asp-route-id="@Model.Id"><div>Нет</div></a>
+
+        </div>
+    </form>
+</div>

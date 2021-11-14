@@ -5,7 +5,10 @@
 }
 
 <div class="divForEdit">
-    <form class="FormForEdit" asp-controller="Company" asp-action="Edit" method="post">
+    @{ 
+        int buf = Model.Id;
+    }
+    <form class="FormForEdit" asp-controller="Company" asp-action="Edit" asp-route-predId="@buf" method="post">
         <a type="button" asp-controller="Company" asp-action="List" class="close">X</a>
         <h2>
             Редактирование компании
@@ -14,7 +17,7 @@
             <li>
                 <span>Введите индентификатор компании*</span>
                 <input hidden name="preId" value="@Model.Id" />
-                <input required asp-for="Id" type="text" placeholder="Индентификатор:" />
+                <input required asp-for="Id" type="text" placeholder="Индентификатор:" value="@Model.Id"/>
                 @Html.ValidationMessageFor(model => model.Id, null, new { style = "color:red" })
             </li>
             <li>

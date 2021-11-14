@@ -29,44 +29,44 @@ namespace TestWork.Controllers
             {
                 if(where.Length == 0)
                 {
-                    where += $"WHERE workers.Id = {worker.Id} ";
+                    where += $"WHERE workers.worker_id = {worker.Id} ";
                 }
                 else
                 {
-                    where += $"or workers.Id = {worker.Id} ";
+                    where += $"and workers.worker_id = {worker.Id} ";
                 }
             }
             if (worker?.LastName != null)
             {
                 if (where.Length == 0)
                 {
-                    where += $"WHERE workers.LastName = '{worker.LastName}' ";
+                    where += $"WHERE workers.worker_last_mame = '{worker.LastName}' ";
                 }
                 else
                 {
-                    where += $"or workers.LastName = '{worker.LastName}' ";
+                    where += $"and workers.worker_last_mame = '{worker.LastName}' ";
                 }
             }
             if (worker?.FirstName != null)
             {
                 if (where.Length == 0)
                 {
-                    where += $"WHERE workers.FirstName = '{worker.FirstName}' ";
+                    where += $"WHERE workers.worker_first_name = '{worker.FirstName}' ";
                 }
                 else
                 {
-                    where += $"or workers.FirstName = '{worker.FirstName}' ";
+                    where += $"and workers.worker_first_name = '{worker.FirstName}' ";
                 }
             }
             if (worker?.MiddleName != null)
             {
                 if (where.Length == 0)
                 {
-                    where += $"WHERE workers.MiddleName = '{worker.MiddleName}' ";
+                    where += $"WHERE workers.worker_middle_name = '{worker.MiddleName}' ";
                 }
                 else
                 {
-                    where += $"or workers.MiddleName = '{worker.MiddleName}' ";
+                    where += $"and workers.worker_middle_name = '{worker.MiddleName}' ";
                 }
             }            
 

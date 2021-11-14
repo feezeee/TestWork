@@ -10,76 +10,67 @@ using TestWork.Models;
 
 namespace TestWork.Controllers
 {
-    public class CompanyController : Controller
+    public class FormTypeController : Controller
     {
         private readonly IConfiguration _config;
         private readonly string connectionString;
 
-        public CompanyController(IConfiguration config)
+        public FormTypeController(IConfiguration config)
         {
             _config = config;
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<IActionResult> List(Company company)
+        public async Task<IActionResult> List(FormType formType)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
-
             string where = "";
-
-            if (company?.Id != 0)
+            if (formType?.Id != 0)
             {
                 if (where.Length == 0)
                 {
-                    where += $"WHERE companies.company_id = {company.Id} ";
+                    where += $"WHERE form_types.form_type_id = {formType.Id} ";
                 }
                 else
                 {
-                    where += $"and companies.company_id = {company.Id} ";
+                    where += $"and form_types.form_type_id = {formType.Id} ";
                 }
             }
-            if (company?.Name != null)
+            if (formType?.Name != null)
             {
                 if (where.Length == 0)
                 {
-                    where += $"WHERE companies.company_name = '{company.Name}' ";
+                    where += $"WHERE form_types.form_type_name = '{formType.Name}' ";
                 }
                 else
                 {
-                    where += $"and companies.company_name = '{company.Name}' ";
+                    where += $"and form_types.form_type_name = '{formType.Name}' ";
                 }
-            }
+            }            
 
-            var companies = await myDbConnection.CompaniesList(where);
-            foreach (var el in companies)
-            {
-                el.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {el.Id}").Result);
-            }
+            var formTypes = await myDbConnection.FormTypesList(where);
 
-            return View(companies);
+            return View(formTypes);
         }
 
         [HttpGet]
         public ViewResult Create()
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
-
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Company company)
+        public async Task<IActionResult> Create(FormType formType)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (ModelState.IsValid)
             {
-                await myDbConnection.CompanyCreate(company);
+                await myDbConnection.FormTypeCreate(formType);
 
                 return RedirectToAction("List");
             }
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
-            return View(company);
+            return View(formType);
         }
 
 
@@ -90,40 +81,38 @@ namespace TestWork.Controllers
 
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
-                if (company == null)
+                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
-                    
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
-                
-                ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
-                return View(company);
+
+                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+                return View(formType);
             }
             return RedirectToAction("List");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Company company, int? predId)
+        public async Task<IActionResult> Edit(FormType formType)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (ModelState.IsValid)
             {
-                await myDbConnection.CompanyUpdate(company, predId);
+                await myDbConnection.FormTypeUpdate(formType);
                 return RedirectToAction("List");
             }
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
-            return View(company);
+            formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+            return View(formType);
         }
 
-        public IActionResult CheckId(int? preId, int id)
+        public IActionResult CheckFormType(int? Id, string Name)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
-            if (preId != null)
+            if (Id != null)
             {
-                var res1 = myDbConnection.CompaniesList($"WHERE companies.company_id = {preId}").Result.FirstOrDefault();
-                var res2 = myDbConnection.CompaniesList($"WHERE companies.company_id = {id}").Result.FirstOrDefault();
+                var res1 = myDbConnection.FormTypesList($"WHERE form_types.form_type_id = {Id}").Result.FirstOrDefault();
+                var res2 = myDbConnection.FormTypesList($"WHERE form_types.form_type_name = '{Name}'").Result.FirstOrDefault();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -132,7 +121,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = myDbConnection.CompaniesList($"WHERE companies.company_id = {id}").Result.FirstOrDefault();
+                var res3 = myDbConnection.FormTypesList($"WHERE form_types.form_type_name = '{Name}'").Result.FirstOrDefault();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -145,16 +134,16 @@ namespace TestWork.Controllers
             MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
-                if (company == null)
+                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
-                if (company.Workers?.Count == 0)
+                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+                if (formType.Companies?.Count == 0)
                 {
-                    return View(company);
+                    return View(formType);
                 }
                 return RedirectToAction("List");
             }
@@ -167,17 +156,17 @@ namespace TestWork.Controllers
             MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
-                if (company == null)
+                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
+                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
 
-                if (company.Workers?.Count == 0)
+                if (formType.Companies?.Count == 0)
                 {
-                    await myDbConnection.CompanyDelete(id.Value);
+                    await myDbConnection.FormTypeDelete(id.Value);
                 }
                 else
                 {

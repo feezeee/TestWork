@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FormType>
+@{
+    Layout = "_Layout";
+}
+<div class="workerList table-responsive">
+    <form name="find" method="get" asp-controller="FormType" asp-action="List" class="param_workers">
+        <input class="form-control" name="formType.Id" type="text" placeholder="Id ОПФ:" />
+        <input class="form-control" name="formType.Name" type="text" placeholder="Наименование ОПФ:" />
+        <div class="findbutton">
+            <button class="btn btn-success" type="submit">
+                Поиск
+            </button>
+        </div>
+    </form>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Организационно-правовая форма</th>
+            </tr>
+        </thead>
+        <tbody id="editFormType">
+            @foreach (var formType in Model)
+            {
+                <tr class="editRow">
+                    <th class="rowId text-center">@formType.Id</th>
+                    <td class="text-center">@formType.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,30 @@
+﻿@model FormType
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="FormType" asp-action="Edit" method="post">
+        <a type="button" asp-controller="FormType" asp-action="List" class="close">X</a>
+        <h2>
+            Редактирование ОПФ
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите наименование ОПФ*</span>
+                <input hidden asp-for="Id" type="text" value="@Model.Id" />
+                <input required asp-for="Name" type="text" placeholder="Наименование:" value="@Model.Name"/>
+                @Html.ValidationMessageFor(model => model.Name, null, new { style = "color:red" })
+            </li>            
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Изменить</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+            @if (Model.Companies?.Count == 0)
+            {
+                <a class="btn btn-danger" asp-controller="FormType" asp-action="Delete" asp-route-id=@Model.Id><div>Удалить</div></a>
+            }
+        </div>
+    </form>
+</div>

@@ -1,0 +1,25 @@
+﻿@model FormType
+@{
+    Layout = "_Layout";
+
+}
+
+<div class="divForEdit">
+    <form class="FormForEdit" asp-controller="FormType" asp-action="Create" method="post">
+        <a type="button" asp-controller="FormType" asp-action="List" class="close">X</a>
+        <h2>
+            Добавление компании
+        </h2>
+        <ul class="properties">
+            <li>
+                <span>Введите наименование ОПФ*</span>
+                <input required asp-for="Name" type="text" placeholder="Наименование:" />
+                @Html.ValidationMessageFor(model => model.Name, null, new { style = "color:red" })
+            </li>
+        </ul>
+        <div class="button_place">
+            <button type="submit" class="btn btn-success">Сохранить</button>
+            <button type="reset" class="btn btn-danger">Очистить</button>
+        </div>
+    </form>
+</div>

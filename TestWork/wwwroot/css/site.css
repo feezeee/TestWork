@@ -107,8 +107,8 @@ html, body {
 }
 
 .FormForEdit {
-    min-height: 400px;
-    min-width: 600px;
+    min-height: 300px;
+    min-width: 700px;
     background-color: #e9fffc;
     padding: 30px;
     border-radius: 15px;
@@ -126,7 +126,7 @@ html, body {
 }
 
 .properties li {
-    width: 40%;
+    width: 45%;
     list-style-type: none;
     display: flex;
     flex-direction: column;
