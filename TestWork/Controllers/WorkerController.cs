@@ -21,6 +21,11 @@ namespace TestWork.Controllers
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Отображение списка сотрудников
+        /// </summary>
+        /// <param name="worker">Фильтрующие данные</param>
+        /// <returns></returns>
         public async Task<IActionResult> List(Worker worker)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -75,6 +80,11 @@ namespace TestWork.Controllers
             return View(workers);
         }
 
+
+        /// <summary>
+        /// Вызов форма добавления сотрудника
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
         {
@@ -100,7 +110,11 @@ namespace TestWork.Controllers
             return View(worker);
         }
 
-
+        /// <summary>
+        /// Вызов формы редактирования сотрудника
+        /// </summary>
+        /// <param name="id">Индентификатор сотрудника</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -134,7 +148,11 @@ namespace TestWork.Controllers
             return View(worker);
         }
 
-
+        /// <summary>
+        /// Вызов формы удаления сотрудника
+        /// </summary>
+        /// <param name="id">Индентификатор сотрудника</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int? id)
         {

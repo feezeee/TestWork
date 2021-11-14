@@ -20,6 +20,11 @@ namespace TestWork.Controllers
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Отображение списка должностей
+        /// </summary>
+        /// <param name="position">Фильтрующие параметры</param>
+        /// <returns></returns>
         public async Task<IActionResult> List(Position position)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -52,6 +57,13 @@ namespace TestWork.Controllers
             return View(positions);
         }
 
+
+        /// <summary>
+        /// Проверка на уникальность Id и(или) наименования должности
+        /// </summary>
+        /// <param name="Id">Индентификатор должности</param>
+        /// <param name="Name">Наименование должности</param>
+        /// <returns></returns>
         public IActionResult CheckPosition(int? Id, string Name)
         {
 
@@ -75,6 +87,11 @@ namespace TestWork.Controllers
             }
         }
 
+       /// <summary>
+       /// Вызов формы добавления новой должности
+       /// </summary>
+       /// <returns></returns>
+
         [HttpGet]
         public ViewResult Create()
         {
@@ -95,6 +112,12 @@ namespace TestWork.Controllers
             return View(position);
         }
 
+
+        /// <summary>
+        /// Вызов формы редактирования сотрудника
+        /// </summary>
+        /// <param name="id">Индентификатор сотрудника</param>
+        /// <returns></returns>
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -128,6 +151,11 @@ namespace TestWork.Controllers
         }
 
 
+        /// <summary>
+        /// Вызов формы удаления сотрудника
+        /// </summary>
+        /// <param name="id">Индентификатор сотрудника</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int? id)
         {

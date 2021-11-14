@@ -21,6 +21,12 @@ namespace TestWork.Controllers
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+
+        /// <summary>
+        /// Вывод списка компаний
+        /// </summary>
+        /// <param name="company">Фильтрующие параметры</param>
+        /// <returns></returns>
         public async Task<IActionResult> List(Company company)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -59,6 +65,11 @@ namespace TestWork.Controllers
             return View(companies);
         }
 
+
+        /// <summary>
+        /// Вызов формы добавления новой компании
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
         {
@@ -82,6 +93,12 @@ namespace TestWork.Controllers
             return View(company);
         }
 
+
+        /// <summary>
+        /// Вызов формы редактирования информации о компании
+        /// </summary>
+        /// <param name="id">Индентификатор компании</param>
+        /// <returns></returns>
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -117,6 +134,11 @@ namespace TestWork.Controllers
             return View(company);
         }
 
+
+        /// <summary>
+        /// Проверка индентификатора компании на уникальность
+        /// </summary>
+        /// <returns></returns>
         public IActionResult CheckId(int? preId, int id)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -139,6 +161,12 @@ namespace TestWork.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Вызов формы удаления компании
+        /// </summary>
+        /// <param name="id">Индентификатор компании</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int? id)
         {

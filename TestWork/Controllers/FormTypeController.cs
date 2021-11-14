@@ -21,6 +21,11 @@ namespace TestWork.Controllers
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Вывод информации о всех ОПФ
+        /// </summary>
+        /// <param name="formType">Фильтрующие параметры</param>
+        /// <returns></returns>
         public async Task<IActionResult> List(FormType formType)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -53,6 +58,11 @@ namespace TestWork.Controllers
             return View(formTypes);
         }
 
+
+        /// <summary>
+        /// Вызов формы добавления новой ОПФ
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
         {
@@ -74,6 +84,11 @@ namespace TestWork.Controllers
         }
 
 
+        /// <summary>
+        /// Вызов формы редактирования ОПФ
+        /// </summary>
+        /// <param name="id">Индентификатор ОПФ</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -106,6 +121,13 @@ namespace TestWork.Controllers
             return View(formType);
         }
 
+
+        /// <summary>
+        /// Проверка на уникальность наименования ОПФ
+        /// </summary>
+        /// <param name="Id">Индентификатор ОПФ</param>
+        /// <param name="Name">Наименование ОПФ</param>
+        /// <returns></returns>
         public IActionResult CheckFormType(int? Id, string Name)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
@@ -128,6 +150,11 @@ namespace TestWork.Controllers
             }
         }
 
+        /// <summary>
+        /// Вызов формы удаления ОПФ
+        /// </summary>
+        /// <param name="id">Индентификатор ОПФ</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(int? id)
         {

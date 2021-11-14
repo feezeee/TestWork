@@ -8,6 +8,9 @@ using TestWork.Models;
 
 namespace TestWork.Data
 {
+    /// <summary>
+    /// Класс, взаимодействующий с бд
+    /// </summary>
     public class MyDbConnection
     {
         private readonly IConfiguration _config;
@@ -19,6 +22,10 @@ namespace TestWork.Data
             connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Проверка на существование таблицы 'workers' в базе данных
+        /// </summary>
+        /// <returns>true - если сущетсвует, false - если не существует</returns>
         private async Task<bool> WorkerTableExist()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -42,6 +49,12 @@ namespace TestWork.Data
                 return res;
             }
         }
+
+        /// <summary>
+        /// Вовращает список работников из сущности 'workers'
+        /// </summary>
+        /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
+        /// <returns>Вовращает список работников Task<IEnumerable<Worker>></returns>
         public async Task<IEnumerable<Worker>> WorkersList(string where = "")
         {
 
@@ -94,6 +107,12 @@ namespace TestWork.Data
             }
             return workers;
         }
+
+        /// <summary>
+        /// Возвращает список работников по их индентификатору
+        /// </summary>
+        /// <param name="id">Необходимый индентификатор</param>
+        /// <returns>Возвращает список работников по их индентификатору Task<IEnumerable<Worker>></returns>
         public async Task<IEnumerable<Worker>> WorkerById(int id)
         {
             List<Worker> workers = new List<Worker>();
@@ -146,6 +165,12 @@ namespace TestWork.Data
             }
             return workers;
         }
+
+        /// <summary>
+        /// Добавляет новый экземпляр сущности 'workers'
+        /// </summary>
+        /// <param name="worker">Сотрудник, которого необходимо занести в бд</param>
+        /// <returns></returns>
         public async Task WorkerCreate(Worker worker)
         {
             if (WorkerTableExist().Result)
@@ -159,6 +184,12 @@ namespace TestWork.Data
                 }
             }
         }
+
+        /// <summary>
+        /// Обновляет сведения об указанном сотруднике в сущности 'workers'
+        /// </summary>
+        /// <param name="worker">Измененные параметры сотрудника</param>
+        /// <returns></returns>
         public async Task WorkerUpdate(Worker worker)
         {
             if (WorkerTableExist().Result)
@@ -174,6 +205,12 @@ namespace TestWork.Data
 
 
         }
+
+        /// <summary>
+        /// Удаление сотрудника из сущности 'workers'
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task WorkerDelete(int? id)
         {
             if (WorkerTableExist().Result)
@@ -192,6 +229,11 @@ namespace TestWork.Data
         }
 
 
+
+        /// <summary>
+        /// Проверка на существование таблицы 'companies' в базе данных
+        /// </summary>
+        /// <returns>true - если сущетсвует, false - если не существует</returns>
         private async Task<bool> CompanyTableExist()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -215,6 +257,12 @@ namespace TestWork.Data
                 return res;
             }
         }
+
+        /// <summary>
+        /// Вовращает список компаний из сущности 'companies'
+        /// </summary>
+        /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
+        /// <returns>Вовращает список компаний из сущности 'companies' Task<IEnumerable<Company>></returns>
         public async Task<IEnumerable<Company>> CompaniesList(string where = "")
         {
             List<Company> companies = new List<Company>();
@@ -251,6 +299,12 @@ namespace TestWork.Data
             }
             return companies;
         }
+
+        /// <summary>
+        /// Возвращает список компаний по их индентификатору
+        /// </summary>
+        /// <param name="id">Необходимый индентификатор</param>
+        /// <returns>Возвращает список компаний по их индентификатору Task<IEnumerable<Company>></returns>
         public async Task<IEnumerable<Company>> CompanyById(int id)
         {
             List<Company> companies = new List<Company>();
@@ -287,6 +341,12 @@ namespace TestWork.Data
             }
             return companies;            
         }
+
+        /// <summary>
+        /// Добавляет новый экземпляр сущности 'companies'
+        /// </summary>
+        /// <param name="company">Компания, которую необходимо занести в бд</param>
+        /// <returns></returns>
         public async Task CompanyCreate(Company company)
         {
             if (CompanyTableExist().Result)
@@ -300,6 +360,13 @@ namespace TestWork.Data
                 }
             }
         }
+
+        /// <summary>
+        /// Обновление данных о компании в сущности 'companies'
+        /// </summary>
+        /// <param name="company">Изменения компании</param>
+        /// <param name="predId">Предыдущий индентификатор компании</param>
+        /// <returns></returns>
         public async Task CompanyUpdate(Company company, int? predId)
         {
             if (CompanyTableExist().Result)
@@ -315,6 +382,12 @@ namespace TestWork.Data
 
 
         }
+
+        /// <summary>
+        /// Удаление компании из сущности 'companies'
+        /// </summary>
+        /// <param name="id">Индентификатор компании</param>
+        /// <returns></returns>
         public async Task CompanyDelete(int? id)
         {
             if (CompanyTableExist().Result)
@@ -334,7 +407,10 @@ namespace TestWork.Data
 
 
 
-
+        /// <summary>
+        /// Проверка на существование таблицы 'positions' в базе данных
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> PositionTableExist()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -358,6 +434,12 @@ namespace TestWork.Data
                 return res;
             }
         }
+
+        /// <summary>
+        /// Вовращает список должностей из сущности 'positions'
+        /// </summary>
+        /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
+        /// <returns></returns>
         public async Task<IEnumerable<Position>> PositionsList(string where = "")
         {
             List<Position> positions = new List<Position>();
@@ -389,6 +471,12 @@ namespace TestWork.Data
             return positions;
             
         }
+
+        /// <summary>
+        /// Возвращает список должностей по индентификатору
+        /// </summary>
+        /// <param name="id">Индентификатор должности</param>
+        /// <returns></returns>
         public async Task<IEnumerable<Position>> PositionById(int id)
         {
             List<Position> positions = new List<Position>();
@@ -419,6 +507,12 @@ namespace TestWork.Data
             }
             return positions;
         }
+
+        /// <summary>
+        /// Добавление новой должности в сущность 'positions'
+        /// </summary>
+        /// <param name="position">Новая должность</param>
+        /// <returns></returns>
         public async Task PositionCreate(Position position)
         {
             if (PositionTableExist().Result)
@@ -432,6 +526,12 @@ namespace TestWork.Data
                 }
             }
         }
+
+        /// <summary>
+        /// Обновление сведений о должности
+        /// </summary>
+        /// <param name="position">Измененная должность</param>
+        /// <returns></returns>
         public async Task PositionUpdate(Position position)
         {
             if (PositionTableExist().Result)
@@ -447,6 +547,12 @@ namespace TestWork.Data
 
 
         }
+
+        /// <summary>
+        /// Удаление должности из сущность 'positions' по индентификатору
+        /// </summary>
+        /// <param name="id">Индентификатор должности</param>
+        /// <returns></returns>
         public async Task PositionDelete(int? id)
         {
             if (PositionTableExist().Result)
@@ -465,6 +571,11 @@ namespace TestWork.Data
         }
 
 
+
+        /// <summary>
+        /// Проверка на существование таблицы 'form_types' в базе данных
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> FormTypeTableExist()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -488,6 +599,12 @@ namespace TestWork.Data
                 return res;
             }
         }
+
+        /// <summary>
+        /// Получение списка ОПФ из сущности 'form_types'
+        /// </summary>
+        /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
+        /// <returns></returns>
         public async Task<IEnumerable<FormType>> FormTypesList(string where = "")
         {
             List<FormType> formTypes = new List<FormType>();
@@ -520,6 +637,12 @@ namespace TestWork.Data
             }
             return formTypes;            
         }
+
+        /// <summary>
+        /// Получение списка ОПФ из сущности 'form_types' по индентификатору
+        /// </summary>
+        /// <param name="id">Индентификатор ОПФ</param>
+        /// <returns></returns>
         public async Task<IEnumerable<FormType>> FormTypeById(int id)
         {
             List<FormType> formTypes = new List<FormType>();
@@ -551,6 +674,12 @@ namespace TestWork.Data
             }
             return formTypes;
         }
+
+        /// <summary>
+        /// Добавление новой ОПФ в сущность 'form_types'
+        /// </summary>
+        /// <param name="formType">Новая ОПФ</param>
+        /// <returns></returns>
         public async Task FormTypeCreate(FormType formType)
         {
             if (FormTypeTableExist().Result)
@@ -564,6 +693,12 @@ namespace TestWork.Data
                 }
             }
         }
+
+        /// <summary>
+        /// Изменение информации в существующей ОПФ
+        /// </summary>
+        /// <param name="formType">Измененная ОПФ</param>
+        /// <returns></returns>
         public async Task FormTypeUpdate(FormType formType)
         {
             if (FormTypeTableExist().Result)
@@ -579,6 +714,12 @@ namespace TestWork.Data
 
 
         }
+
+        /// <summary>
+        /// Удаление ОПФ из сущности 'form_types' по индентификатору
+        /// </summary>
+        /// <param name="id">Индентификатор ОПФ</param>
+        /// <returns></returns>
         public async Task FormTypeDelete(int? id)
         {
             if (FormTypeTableExist().Result)
