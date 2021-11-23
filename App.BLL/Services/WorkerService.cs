@@ -2,11 +2,8 @@
 using App.BLL.Interfaces;
 using App.DAL.Interfaces;
 using App.DAL.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace App.BLL.Services
 {
@@ -20,50 +17,38 @@ namespace App.BLL.Services
             Database = unitOfWork;
         }
 
-        public void AddWorker(WorkerDTO orderDto)
+        public void AddWorker(WorkerDTO item)
         {
-            Worker worker = new Worker
-            {
-                FirstName = orderDto.FirstName,
-                LastName = orderDto.LastName,
-                MiddleName = orderDto.MiddleName,
-                PositionId = orderDto.PositionId,
-                CompanyId = orderDto.CompanyId,
-                DateEmployment = orderDto.DateEmployment
-            };
+                Worker worker = new Worker
+                {
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    MiddleName = item.MiddleName,
+                    PositionId = item.PositionId,
+                    CompanyId = item.CompanyId,
+                    DateEmployment = item.DateEmployment
+                };
 
-            Database.Workers.Create(worker);
+                Database.Workers.Create(worker);throw new NullReferenceException(ex.Message);
+            
+            
         }
 
-        public void DeleteWorker(int? id)
+        public void DeleteWorker(int id)
         {
-            throw new NotImplementedException();
+                if (Database.Workers.Find(new Worker { Id = id }) != null)
+                {
+                    Database.Workers.Delete(id);
+                }              
+            
         }
 
-        public WorkerDTO GetWorkerByFirstName(string firstName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkerDTO GetWorkerById(int? id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkerDTO GetWorkerByLastName(string firstName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkerDTO GetWorkerByMiddleName(string firstName)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public IEnumerable<WorkerDTO> GetWorkers()
         {
             var workers = Database.Workers.GetAll();
-            foreach(var worker in workers)
+            foreach (var worker in workers)
             {
                 WorkerDTO myworker = new WorkerDTO();
                 myworker.Id = worker.Id;
@@ -71,7 +56,7 @@ namespace App.BLL.Services
                 myworker.LastName = worker.LastName;
                 myworker.MiddleName = worker.MiddleName;
                 myworker.DateEmployment = worker.DateEmployment;
-                
+
 
                 myworker.Position = new PositionDTO
                 {
@@ -92,7 +77,7 @@ namespace App.BLL.Services
                 //    };
                 //    myworker.Position?.Workers?.Add(__worker);
                 //}
-                
+
                 myworker.PositionId = worker.PositionId;
 
 
@@ -130,9 +115,96 @@ namespace App.BLL.Services
             }
         }
 
-        public void UpdateWorker(WorkerDTO worker)
+        public void UpdateWorker(WorkerDTO item)
         {
-            throw new NotImplementedException();
+            Worker worker = new Worker
+            {
+                Id = item.Id,
+                FirstName = item.FirstName,
+                LastName = item.LastName,
+                MiddleName = item.MiddleName,
+                PositionId = item.PositionId,
+                CompanyId = item.CompanyId,
+                DateEmployment = item.DateEmployment
+            };
+
+            Database.Workers.Update(worker);
+        }
+
+        public IEnumerable<WorkerDTO> GetWorkerBy(int? id, string lastName, string firstName, string middleName)
+        {
+            Worker item = null;
+            if (id != null)
+            {
+                if(item == null)
+                {
+                    item = new Worker();
+                }
+                item.Id = id.Value;
+            }
+            if (String.IsNullOrEmpty(lastName))
+            {
+                if (item == null)
+                {
+                    item = new Worker();
+                }
+                item.LastName = lastName;
+            }
+            if (String.IsNullOrEmpty(firstName))
+            {
+                if (item == null)
+                {
+                    item = new Worker();
+                }
+                item.FirstName = firstName;
+            }
+            if (String.IsNullOrEmpty(middleName))
+            {
+                if (item == null)
+                {
+                    item = new Worker();
+                }
+                item.MiddleName = middleName;
+            }
+            var workers = Database.Workers.Find(item);
+            foreach (var worker in workers)
+            {
+                WorkerDTO myworker = new WorkerDTO();
+                myworker.Id = worker.Id;
+                myworker.FirstName = worker.FirstName;
+                myworker.LastName = worker.LastName;
+                myworker.MiddleName = worker.MiddleName;
+                myworker.DateEmployment = worker.DateEmployment;
+
+
+                myworker.Position = new PositionDTO
+                {
+                    Id = worker.Position.Id,
+                    Name = worker.Position.Name,
+                };
+
+              
+                myworker.PositionId = worker.PositionId;
+
+
+
+                myworker.Company = new CompanyDTO
+                {
+                    Id = worker.Company.Id,
+                    Name = worker.Company?.Name,
+                    FormType = new FormTypeDTO
+                    {
+                        Id = worker.Company.FormType.Id,
+                        Name = worker.Company?.FormType?.Name
+                    },
+                    FormTypeId = worker.Company.FormTypeId,
+                };
+
+                myworker.CompanyId = worker.CompanyId;
+
+
+                yield return myworker;
+            }
         }
     }
 }

@@ -55,12 +55,15 @@ namespace App.DAL.Data.DbSet
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
-        }
+            OpenConnection();
+            string sql = $"DELETE workers WHERE worker_id = {id}";
+            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            {
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
 
-        public IEnumerable<Worker> Find(Func<Worker, bool> predicate)
-        {
-            throw new NotImplementedException();
+            CloseConnection();
         }
 
         public IEnumerable<Worker> GetAll()
@@ -118,12 +121,7 @@ namespace App.DAL.Data.DbSet
             CloseConnection();
 
             return workers;
-        }
-
-        public Worker GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
+        }               
 
         public void Update(Worker item)
         {
@@ -147,6 +145,141 @@ namespace App.DAL.Data.DbSet
             }
             CloseConnection();
 
+        }
+
+        public IEnumerable<Worker> Find(Worker item)
+        {
+            
+            OpenConnection();
+            string where = "";
+            if(item != null)
+            {
+                if (item.Id != 0)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.worker_id = {item.Id} ";
+                    }
+                    else
+                    {
+                        where += $"and workers.worker_id = {item.Id} ";
+                    }
+                }
+                if (item.LastName != null)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.worker_last_mame = '{item.LastName}' ";
+                    }
+                    else
+                    {
+                        where += $"and workers.worker_last_mame = '{item.LastName}' ";
+                    }
+                }
+                if (item.FirstName != null)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.worker_first_name = '{item.FirstName}' ";
+                    }
+                    else
+                    {
+                        where += $"and workers.worker_first_name = '{item.FirstName}' ";
+                    }
+                }
+                if (item.MiddleName != null)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.worker_middle_name = '{item.MiddleName}' ";
+                    }
+                    else
+                    {
+                        where += $"and workers.worker_middle_name = '{item.MiddleName}' ";
+                    }
+                }
+            }
+
+            List<Worker> workers = new List<Worker>();
+            string sql = string.Format("SELECT* FROM workers " +
+                "JOIN positions ON positions.position_id = workers.position_id " +
+                "JOIN companies ON companies.company_id = workers.company_id " +
+                "JOIN form_types ON form_types.form_type_id = companies.form_type_id " +
+                where +
+                "ORDER BY workers.worker_id ");
+
+            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows) // если есть данные
+                    {
+                        while (reader.Read()) // построчно считываем данные
+                        {
+                            Worker worker = new Worker
+                            {
+                                Id = reader.GetInt32(0),
+                                LastName = reader.GetString(1),
+                                FirstName = reader.GetString(2),
+                                MiddleName = reader.GetString(3),
+                                DateEmployment = reader.GetDateTime(4),
+                                PositionId = reader.GetInt32(5),
+                                CompanyId = reader.GetInt32(6),
+                                Position = new Position
+                                {
+                                    Id = reader.GetInt32(7),
+                                    Name = reader.GetString(8)
+                                },
+                                Company = new Company
+                                {
+                                    Id = reader.GetInt32(9),
+                                    Name = reader.GetString(10),
+                                    FormTypeId = reader.GetInt32(11),
+                                    FormType = new FormType
+                                    {
+                                        Id = reader.GetInt32(12),
+                                        Name = reader.GetString(13)
+                                    }
+                                }
+                            };
+                            workers.Add(worker);
+                        }
+                    }
+                    reader.Close();
+                }
+                cmd.Dispose();
+            }
+
+            CloseConnection();
+
+            return workers;
+        }
+
+        public bool TableExist()
+        {
+            OpenConnection();
+            string sql = "IF OBJECT_ID('workers') IS NOT NULL SELECT 1 ELSE SELECT 0";
+            bool res = false;
+            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+
+
+                    if (reader.HasRows) // если есть данные
+                    {
+                        while (reader.Read()) // построчно считываем данные
+                        {
+                            res = Convert.ToBoolean(reader.GetInt32(0));
+                        }
+                    }
+                    reader.Close();
+                }
+                cmd.Dispose();
+            }
+
+            CloseConnection();
+            return res;            
         }
     }
 }

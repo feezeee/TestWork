@@ -36,6 +36,9 @@ namespace TestWork.Controllers
 
             var test = workerService.GetWorkers();
 
+
+
+
             List<Worker> workers1 = new List<Worker>();
             foreach(var el in test)
             {

@@ -1,11 +1,8 @@
 ﻿using App.DAL.Data;
 using App.DAL.Interfaces;
 using App.DAL.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace App.DAL.Repositories
 {
@@ -20,32 +17,80 @@ namespace App.DAL.Repositories
 
         public void Create(Worker item)
         {
-            db.Workers.Create(item);
+            if (db.Workers.TableExist())
+            {
+                db.Workers.Create(item);
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }
         }
 
         public void Delete(int id)
         {
-            db.Workers.Delete(id);
+            if (db.Workers.TableExist())
+            {
+                db.Workers.Delete(id);               
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }
         }
 
-        public IEnumerable<Worker> Find(Func<Worker, bool> predicate)
+        public IEnumerable<Worker> Find(Worker worker)
         {
-            return db.Workers.Find(predicate);
+            if (db.Workers.TableExist())
+            {
+                return db.Workers.Find(worker);
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }
         }
 
         public IEnumerable<Worker> GetAll()
         {
-            return db.Workers.GetAll();
+            if (db.Workers.TableExist())
+            {
+                return db.Workers.GetAll();
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }
         }
 
         public Worker GetById(int id)
         {
-            return db.Workers.GetById(id);
+            if (db.Workers.TableExist())
+            {
+                var workers = db.Workers.Find(new Worker { Id = id });
+                foreach (var worker in workers)
+                {
+                    return worker;
+                }
+                return null;
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }            
         }
 
         public void Update(Worker item)
         {
-            db.Workers.Update(item);
+
+            if (db.Workers.TableExist())
+            {
+                db.Workers.Update(item);
+            }
+            else
+            {
+                throw new NullReferenceException("Таблица работников не существует");
+            }
         }
     }
 }

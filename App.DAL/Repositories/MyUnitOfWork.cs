@@ -1,6 +1,7 @@
 ﻿using App.DAL.Data;
 using App.DAL.Interfaces;
 using App.DAL.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,10 @@ namespace App.DAL.Repositories
     {
         private MyDb db;
         private WorkerRepository workerRepository;
-        //private OrderRepository orderRepository;
 
-        public MyUnitOfWork()
+        public MyUnitOfWork(IConfiguration configuration)
         {
-            db = new MyDb();
+            db = new MyDb(configuration.GetConnectionString("DefaultConnection"));
         }
 
         public IRepository<Worker> Workers

@@ -7,16 +7,13 @@ namespace App.BLL.Interfaces
     {
         void AddWorker(WorkerDTO orderDto);
 
-        WorkerDTO GetWorkerById(int? id);
-        WorkerDTO GetWorkerByFirstName(string firstName);
-        WorkerDTO GetWorkerByLastName(string firstName);
-        WorkerDTO GetWorkerByMiddleName(string firstName);
+        IEnumerable<WorkerDTO> GetWorkerBy(int? id, string lastName, string firstName, string middleName);
 
         IEnumerable<WorkerDTO> GetWorkers();
 
         void UpdateWorker(WorkerDTO worker);
 
-        void DeleteWorker(int? id);
+        void DeleteWorker(int id);
         
 
     }

@@ -5,10 +5,11 @@ namespace App.DAL.Data
 {
     public class MyDb
     {
-        private readonly string _connectionString = "server=DESKTOP-IFC1G52\\SQLEXPRESS;database=testdb;Trusted_Connection=True;";
+        private readonly string _connectionString;
 
-        public MyDb()
-        {          
+        public MyDb(string connectionString)
+        {
+            _connectionString = connectionString;
             Workers = new WorkerDbSet(_connectionString);
         }
         public IDbSet<Worker> Workers { get; }
