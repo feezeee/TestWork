@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace TestWork.Models
 {
     [Table("positions")]
-    public class Position
+    public class PositionViewModel
     {
         [Column("Id")]
         public int Id { get; set; }
@@ -20,11 +20,11 @@ namespace TestWork.Models
         [Remote(action: "CheckPosition", controller: "Position", AdditionalFields = "Id", ErrorMessage = "Должность с таким наименованием уже существует!", HttpMethod = "POST")]
         public string Name { get; set; }
 
-        public virtual List<Worker> Workers { get; set; }
+        public virtual List<WorkerViewModel> Workers { get; set; }
 
-        public Position()
+        public PositionViewModel()
         {
-            Workers = new List<Worker>();
+            Workers = new List<WorkerViewModel>();
         }
 
     }

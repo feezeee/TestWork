@@ -1,12 +1,8 @@
-﻿using App.DAL.Interfaces;
-using App.DAL.Models;
+﻿using App.BLL.Interfaces;
+using App.BLL.Services;
+using App.DAL.Interfaces;
 using App.DAL.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.BLL.Infrastructure
 {
@@ -14,8 +10,13 @@ namespace App.BLL.Infrastructure
     {        
         public static IServiceCollection AddBll(this IServiceCollection services)
         {
-            services.AddTransient<IRepository<Worker>, WorkerRepository>();
+
             services.AddTransient<IUnitOfWork, MyUnitOfWork>();
+            services.AddTransient<IWorkerService, WorkerService>();
+            services.AddTransient<IPositionService, PositionService>();
+            services.AddTransient<ICompanyService, CompanyService>();
+            services.AddTransient<IFormTypeService, FormTypeService>();
+            services.AddTransient<IManagerServices, ManagerServices>();
             return services;
         }
     }

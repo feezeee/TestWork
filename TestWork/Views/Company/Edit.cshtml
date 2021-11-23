@@ -1,4 +1,4 @@
-﻿@model Company
+﻿@model CompanyViewModel
 @{
     Layout = "_Layout";
 
@@ -14,16 +14,32 @@
             Редактирование компании
         </h2>
         <ul class="properties">
-            <li>
-                <span>Введите индентификатор компании*</span>
-                <input hidden name="preId" value="@Model.Id" />
-                <input required asp-for="Id" type="text" placeholder="Индентификатор:" value="@Model.Id"/>
-                @Html.ValidationMessageFor(model => model.Id, null, new { style = "color:red" })
-            </li>
-            <li>
-                <span>Введите наименование компании*</span>
-                <input required asp-for="Name" type="text" placeholder="Наименование компании:" value="@Model.Name"/>
-            </li>
+            @if (Model.Workers?.Count == 0)
+            {
+                <li>
+                
+                        <span>Введите индентификатор компании*</span>
+                        <input hidden name="predId" value="@Model.Id" />
+                        <input required asp-for="Id" type="text" placeholder="Индентификатор:" value="@Model.Id"/>                    
+                        @Html.ValidationMessageFor(model => model.Id, null, new { style = "color:red" })
+                
+
+                </li>
+                 <li>                
+                    <span>Введите наименование компании*</span>
+                    <input required asp-for="Name" type="text" placeholder="Наименование компании:" value="@Model.Name"/>
+                </li>
+            }
+            else
+            {
+                <input hidden required asp-for="Id" type="text" placeholder="Индентификатор:" value="@Model.Id"/>         
+                <li>                
+                    <span>Введите наименование компании*</span>
+                    <input required asp-for="Name" type="text" placeholder="Наименование компании:" value="@Model.Name"/>
+                </li>
+            }
+            
+           
             <li>
                 <span>Выберите организационно-правовую форму*</span>
                 <select required asp-for="FormTypeId" asp-items="ViewBag.FormTypes" value="@Model.FormType?.Name"></select>

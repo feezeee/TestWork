@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace App.DAL.Models
 {
     [Table("workers")]
-    public class Worker
+    public class WorkerDAL
     {
         [Column("Id")]
         public int Id { get; set; }
@@ -33,12 +33,12 @@ namespace App.DAL.Models
         [Column("PositionId")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int PositionId { get; set; }
-        public Position Position { get; set; }
+        public PositionDAL Position { get; set; }
 
 
         [Column("CompanyId")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public CompanyDAL Company { get; set; }
     }
 }

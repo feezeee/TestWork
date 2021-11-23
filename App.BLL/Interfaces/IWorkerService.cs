@@ -5,13 +5,13 @@ namespace App.BLL.Interfaces
 {
     public interface IWorkerService
     {
-        void AddWorker(WorkerDTO orderDto);
+        void AddWorker(WorkerDTO item);
 
-        IEnumerable<WorkerDTO> GetWorkerBy(int id, string lastName, string firstName, string middleName);
+        IEnumerable<WorkerDTO> GetWorkerBy(int id = 0, string lastName = "", string firstName = "", string middleName = "", int positionId = 0, int companyId = 0);
 
         IEnumerable<WorkerDTO> GetWorkers();
 
-        void UpdateWorker(WorkerDTO worker);
+        void UpdateWorker(WorkerDTO item);
 
         void DeleteWorker(int id);
         

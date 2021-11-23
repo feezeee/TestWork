@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Repositories
 {
-    public class PositionRepository : IRepository<Position>
+    public class PositionRepository : IRepository<PositionDAL>
     {
         private MyDb db;
 
@@ -18,7 +18,7 @@ namespace App.DAL.Repositories
             this.db = context;
         }
 
-        public void Create(Position item)
+        public void Create(PositionDAL item)
         {
             if (db.Positions.TableExist())
             {
@@ -42,7 +42,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Position> Find(Position item)
+        public IEnumerable<PositionDAL> Find(PositionDAL item)
         {
             if (db.Positions.TableExist())
             {
@@ -54,7 +54,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Position> GetAll()
+        public IEnumerable<PositionDAL> GetAll()
         {
             if (db.Positions.TableExist())
             {
@@ -66,11 +66,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public Position GetById(int id)
+        public PositionDAL GetById(int id)
         {
             if (db.Positions.TableExist())
             {
-                var positions = db.Positions.Find(new Position { Id = id });
+                var positions = db.Positions.Find(new PositionDAL { Id = id });
                 foreach (var position in positions)
                 {
                     return position;
@@ -83,12 +83,12 @@ namespace App.DAL.Repositories
             }
         }
 
-        public void Update(Position item)
+        public void Update(PositionDAL item, int? id = null)
         {
 
             if (db.Positions.TableExist())
             {
-                db.Positions.Update(item);
+                db.Positions.Update(item, id);
             }
             else
             {

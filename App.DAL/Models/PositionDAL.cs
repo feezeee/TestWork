@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace App.DAL.Models
 {
     [Table("positions")]
-    public class Position
+    public class PositionDAL
     {
         [Column("Id")]
         public int Id { get; set; }
@@ -15,11 +15,11 @@ namespace App.DAL.Models
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public string Name { get; set; }
 
-        public virtual List<Worker> Workers { get; set; }
+        public virtual List<WorkerDAL> Workers { get; set; }
 
-        public Position()
+        public PositionDAL()
         {
-            Workers = new List<Worker>();
+            Workers = new List<WorkerDAL>();
         }
 
     }

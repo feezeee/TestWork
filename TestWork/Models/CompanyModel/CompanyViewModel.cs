@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace App.DAL.Models
+namespace TestWork.Models
 {
     [Table("Companies")]
-    public class Company
+    public class CompanyViewModel
     {
         [Column("Id")]
+        [Remote(action: "CheckId", controller: "Company", AdditionalFields = "predId", ErrorMessage = "Компания с таким индентификатором уже существует!", HttpMethod = "POST")]
         [RegularExpression(@"\d*", ErrorMessage = "Некорректный индентификатор")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int Id { get; set; }
@@ -22,13 +27,13 @@ namespace App.DAL.Models
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int FormTypeId { get; set; }
 
-        public FormType FormType { get; set; }
+        public FormTypeViewModel FormType { get; set; }
 
-        public virtual List<Worker> Workers { get; set; } 
+        public virtual List<WorkerViewModel> Workers { get; set; } 
 
-        public Company()
+        public CompanyViewModel()
         {
-            Workers = new List<Worker>();
+            Workers = new List<WorkerViewModel>();
         }
 
     }

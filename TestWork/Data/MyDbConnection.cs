@@ -55,10 +55,10 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
         /// <returns>Вовращает список работников Task<IEnumerable<Worker>></returns>
-        public async Task<IEnumerable<Worker>> WorkersList(string where = "")
+        public async Task<IEnumerable<WorkerViewModel>> WorkersList(string where = "")
         {
 
-            List<Worker> workers = new List<Worker>();
+            List<WorkerViewModel> workers = new List<WorkerViewModel>();
             if (WorkerTableExist().Result && FormTypeTableExist().Result && CompanyTableExist().Result && PositionTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -72,7 +72,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Worker worker = new Worker
+                            WorkerViewModel worker = new WorkerViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 LastName = reader.GetString(1),
@@ -81,17 +81,17 @@ namespace TestWork.Data
                                 DateEmployment = reader.GetDateTime(4),
                                 PositionId = reader.GetInt32(5),
                                 CompanyId = reader.GetInt32(6),
-                                Position = new Position
+                                Position = new PositionViewModel
                                 {
                                     Id = reader.GetInt32(7),
                                     Name = reader.GetString(8)
                                 },
-                                Company = new Company
+                                Company = new CompanyViewModel
                                 {
                                     Id = reader.GetInt32(9),
                                     Name = reader.GetString(10),
                                     FormTypeId = reader.GetInt32(11),
-                                    FormType = new FormType
+                                    FormType = new FormTypeViewModel
                                     {
                                         Id = reader.GetInt32(12),
                                         Name = reader.GetString(13)
@@ -113,9 +113,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="id">Необходимый индентификатор</param>
         /// <returns>Возвращает список работников по их индентификатору Task<IEnumerable<Worker>></returns>
-        public async Task<IEnumerable<Worker>> WorkerById(int id)
+        public async Task<IEnumerable<WorkerViewModel>> WorkerById(int id)
         {
-            List<Worker> workers = new List<Worker>();
+            List<WorkerViewModel> workers = new List<WorkerViewModel>();
             if (WorkerTableExist().Result && FormTypeTableExist().Result && CompanyTableExist().Result && PositionTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -129,7 +129,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Worker worker = new Worker
+                            WorkerViewModel worker = new WorkerViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 LastName = reader.GetString(1),
@@ -138,17 +138,17 @@ namespace TestWork.Data
                                 DateEmployment = reader.GetDateTime(4),
                                 PositionId = reader.GetInt32(5),
                                 CompanyId = reader.GetInt32(6),
-                                Position = new Position
+                                Position = new PositionViewModel
                                 {
                                     Id = reader.GetInt32(7),
                                     Name = reader.GetString(8)
                                 },
-                                Company = new Company
+                                Company = new CompanyViewModel
                                 {
                                     Id = reader.GetInt32(9),
                                     Name = reader.GetString(10),
                                     FormTypeId = reader.GetInt32(11),
-                                    FormType = new FormType
+                                    FormType = new FormTypeViewModel
                                     {
                                         Id = reader.GetInt32(12),
                                         Name = reader.GetString(13)
@@ -171,7 +171,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="worker">Сотрудник, которого необходимо занести в бд</param>
         /// <returns></returns>
-        public async Task WorkerCreate(Worker worker)
+        public async Task WorkerCreate(WorkerViewModel worker)
         {
             if (WorkerTableExist().Result)
             {
@@ -190,7 +190,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="worker">Измененные параметры сотрудника</param>
         /// <returns></returns>
-        public async Task WorkerUpdate(Worker worker)
+        public async Task WorkerUpdate(WorkerViewModel worker)
         {
             if (WorkerTableExist().Result)
             {
@@ -263,9 +263,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
         /// <returns>Вовращает список компаний из сущности 'companies' Task<IEnumerable<Company>></returns>
-        public async Task<IEnumerable<Company>> CompaniesList(string where = "")
+        public async Task<IEnumerable<CompanyViewModel>> CompaniesList(string where = "")
         {
-            List<Company> companies = new List<Company>();
+            List<CompanyViewModel> companies = new List<CompanyViewModel>();
             if (CompanyTableExist().Result && FormTypeTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -279,12 +279,12 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Company company = new Company
+                            CompanyViewModel company = new CompanyViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
                                 FormTypeId = reader.GetInt32(2),
-                                FormType = new FormType
+                                FormType = new FormTypeViewModel
                                 {
                                     Id = reader.GetInt32(3),
                                     Name = reader.GetString(4)
@@ -305,9 +305,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="id">Необходимый индентификатор</param>
         /// <returns>Возвращает список компаний по их индентификатору Task<IEnumerable<Company>></returns>
-        public async Task<IEnumerable<Company>> CompanyById(int id)
+        public async Task<IEnumerable<CompanyViewModel>> CompanyById(int id)
         {
-            List<Company> companies = new List<Company>();
+            List<CompanyViewModel> companies = new List<CompanyViewModel>();
             if (CompanyTableExist().Result && FormTypeTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -321,12 +321,12 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Company company = new Company
+                            CompanyViewModel company = new CompanyViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
                                 FormTypeId = reader.GetInt32(2),
-                                FormType = new FormType
+                                FormType = new FormTypeViewModel
                                 {
                                     Id = reader.GetInt32(3),
                                     Name = reader.GetString(4)
@@ -347,7 +347,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="company">Компания, которую необходимо занести в бд</param>
         /// <returns></returns>
-        public async Task CompanyCreate(Company company)
+        public async Task CompanyCreate(CompanyViewModel company)
         {
             if (CompanyTableExist().Result)
             {
@@ -367,7 +367,7 @@ namespace TestWork.Data
         /// <param name="company">Изменения компании</param>
         /// <param name="predId">Предыдущий индентификатор компании</param>
         /// <returns></returns>
-        public async Task CompanyUpdate(Company company, int? predId)
+        public async Task CompanyUpdate(CompanyViewModel company, int? predId)
         {
             if (CompanyTableExist().Result)
             {
@@ -440,9 +440,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Position>> PositionsList(string where = "")
+        public async Task<IEnumerable<PositionViewModel>> PositionsList(string where = "")
         {
-            List<Position> positions = new List<Position>();
+            List<PositionViewModel> positions = new List<PositionViewModel>();
             if (PositionTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -456,7 +456,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Position position = new Position
+                            PositionViewModel position = new PositionViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1)
@@ -477,9 +477,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="id">Индентификатор должности</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Position>> PositionById(int id)
+        public async Task<IEnumerable<PositionViewModel>> PositionById(int id)
         {
-            List<Position> positions = new List<Position>();
+            List<PositionViewModel> positions = new List<PositionViewModel>();
             if (PositionTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -493,7 +493,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            Position position = new Position
+                            PositionViewModel position = new PositionViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1)
@@ -513,7 +513,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="position">Новая должность</param>
         /// <returns></returns>
-        public async Task PositionCreate(Position position)
+        public async Task PositionCreate(PositionViewModel position)
         {
             if (PositionTableExist().Result)
             {
@@ -532,7 +532,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="position">Измененная должность</param>
         /// <returns></returns>
-        public async Task PositionUpdate(Position position)
+        public async Task PositionUpdate(PositionViewModel position)
         {
             if (PositionTableExist().Result)
             {
@@ -605,9 +605,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="where">Дополнительная фильтрация списка. По умолчанию фильтрация отсутствует</param>
         /// <returns></returns>
-        public async Task<IEnumerable<FormType>> FormTypesList(string where = "")
+        public async Task<IEnumerable<FormTypeViewModel>> FormTypesList(string where = "")
         {
-            List<FormType> formTypes = new List<FormType>();
+            List<FormTypeViewModel> formTypes = new List<FormTypeViewModel>();
             if (FormTypeTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -621,7 +621,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            FormType formType = new FormType
+                            FormTypeViewModel formType = new FormTypeViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
@@ -643,9 +643,9 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="id">Индентификатор ОПФ</param>
         /// <returns></returns>
-        public async Task<IEnumerable<FormType>> FormTypeById(int id)
+        public async Task<IEnumerable<FormTypeViewModel>> FormTypeById(int id)
         {
-            List<FormType> formTypes = new List<FormType>();
+            List<FormTypeViewModel> formTypes = new List<FormTypeViewModel>();
             if (FormTypeTableExist().Result)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -659,7 +659,7 @@ namespace TestWork.Data
                     {
                         while (await reader.ReadAsync()) // построчно считываем данные
                         {
-                            FormType formType = new FormType
+                            FormTypeViewModel formType = new FormTypeViewModel
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
@@ -680,7 +680,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="formType">Новая ОПФ</param>
         /// <returns></returns>
-        public async Task FormTypeCreate(FormType formType)
+        public async Task FormTypeCreate(FormTypeViewModel formType)
         {
             if (FormTypeTableExist().Result)
             {
@@ -699,7 +699,7 @@ namespace TestWork.Data
         /// </summary>
         /// <param name="formType">Измененная ОПФ</param>
         /// <returns></returns>
-        public async Task FormTypeUpdate(FormType formType)
+        public async Task FormTypeUpdate(FormTypeViewModel formType)
         {
             if (FormTypeTableExist().Result)
             {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Repositories
 {
-    public class FormTypeRepository : IRepository<FormType>
+    public class FormTypeRepository : IRepository<FormTypeDAL>
     {
         private MyDb db;
 
@@ -18,7 +18,7 @@ namespace App.DAL.Repositories
             this.db = context;
         }
 
-        public void Create(FormType item)
+        public void Create(FormTypeDAL item)
         {
             if (db.FormTypes.TableExist())
             {
@@ -42,7 +42,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<FormType> Find(FormType item)
+        public IEnumerable<FormTypeDAL> Find(FormTypeDAL item)
         {
             if (db.FormTypes.TableExist())
             {
@@ -54,7 +54,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<FormType> GetAll()
+        public IEnumerable<FormTypeDAL> GetAll()
         {
             if (db.FormTypes.TableExist())
             {
@@ -66,11 +66,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public FormType GetById(int id)
+        public FormTypeDAL GetById(int id)
         {
             if (db.FormTypes.TableExist())
             {
-                var formTypes = db.FormTypes.Find(new FormType { Id = id });
+                var formTypes = db.FormTypes.Find(new FormTypeDAL { Id = id });
                 foreach (var form in formTypes)
                 {
                     return form;
@@ -83,12 +83,12 @@ namespace App.DAL.Repositories
             }
         }
 
-        public void Update(FormType item)
+        public void Update(FormTypeDAL item, int? id = null)
         {
 
             if (db.FormTypes.TableExist())
             {
-                db.FormTypes.Update(item);
+                db.FormTypes.Update(item, id);
             }
             else
             {

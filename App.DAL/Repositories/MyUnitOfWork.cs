@@ -24,7 +24,7 @@ namespace App.DAL.Repositories
             db = new MyDb(configuration.GetConnectionString("DefaultConnection"));
         }
 
-        public IRepository<Worker> Workers
+        public IRepository<WorkerDAL> Workers
         {
             get
             {
@@ -34,7 +34,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IRepository<Position> Positions
+        public IRepository<PositionDAL> Positions
         {
             get
             {
@@ -44,7 +44,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IRepository<FormType> FormTypes
+        public IRepository<FormTypeDAL> FormTypes
         {
             get
             {
@@ -54,7 +54,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IRepository<Company> Companies
+        public IRepository<CompanyDAL> Companies
         {
             get
             {

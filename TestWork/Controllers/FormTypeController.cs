@@ -1,24 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using App.BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using TestWork.Data;
+using TestWork.DTOToViewModels;
+using TestWork.IEnumerableExtension;
 using TestWork.Models;
+using TestWork.ViewModelsToDTO;
+
 
 namespace TestWork.Controllers
 {
     public class FormTypeController : Controller
     {
-        private readonly IConfiguration _config;
-        private readonly string connectionString;
+        private readonly IManagerServices _managerServices;
 
-        public FormTypeController(IConfiguration config)
+        public FormTypeController(IManagerServices managerServices)
         {
-            _config = config;
-            connectionString = config.GetConnectionString("DefaultConnection");
+            _managerServices = managerServices;
         }
 
         /// <summary>
@@ -26,36 +24,13 @@ namespace TestWork.Controllers
         /// </summary>
         /// <param name="formType">Фильтрующие параметры</param>
         /// <returns></returns>
-        public async Task<IActionResult> List(FormType formType)
+        public async Task<IActionResult> List(FormTypeViewModel formType)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-            string where = "";
-            if (formType?.Id != 0)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE form_types.form_type_id = {formType.Id} ";
-                }
-                else
-                {
-                    where += $"and form_types.form_type_id = {formType.Id} ";
-                }
-            }
-            if (formType?.Name != null)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE form_types.form_type_name = '{formType.Name}' ";
-                }
-                else
-                {
-                    where += $"and form_types.form_type_name = '{formType.Name}' ";
-                }
-            }            
+            var forms  = _managerServices.FormTypeService.GetFormTypeBy(formType.Id, formType.Name);
 
-            var formTypes = await myDbConnection.FormTypesList(where);
+            List<FormTypeViewModel> myForms = forms.ToList();
 
-            return View(formTypes);
+            return View(myForms);
         }
 
 
@@ -65,18 +40,16 @@ namespace TestWork.Controllers
         /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+        {            
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(FormType formType)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+        public async Task<IActionResult> Create(FormTypeViewModel formType)
+        {            
             if (ModelState.IsValid)
             {
-                await myDbConnection.FormTypeCreate(formType);
+                _managerServices.FormTypeService.AddFormType(formType.ToDTO());
 
                 return RedirectToAction("List");
             }
@@ -92,32 +65,29 @@ namespace TestWork.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-
             if (id != null)
             {
-                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: id.Value).ToList());
                 return View(formType);
             }
             return RedirectToAction("List");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(FormType formType)
+        public async Task<IActionResult> Edit(FormTypeViewModel formType)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (ModelState.IsValid)
             {
-                await myDbConnection.FormTypeUpdate(formType);
+                _managerServices.FormTypeService.UpdateFormType(formType.ToDTO());
                 return RedirectToAction("List");
             }
-            formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+            formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
             return View(formType);
         }
 
@@ -130,11 +100,10 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public IActionResult CheckFormType(int? Id, string Name)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (Id != null)
             {
-                var res1 = myDbConnection.FormTypesList($"WHERE form_types.form_type_id = {Id}").Result.FirstOrDefault();
-                var res2 = myDbConnection.FormTypesList($"WHERE form_types.form_type_name = '{Name}'").Result.FirstOrDefault();
+                var res1 = _managerServices.FormTypeService.GetFormTypeBy(id: Id.Value).GetFirst();
+                var res2 = _managerServices.FormTypeService.GetFormTypeBy(name: Name).GetFirst();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -143,7 +112,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = myDbConnection.FormTypesList($"WHERE form_types.form_type_name = '{Name}'").Result.FirstOrDefault();
+                var res3 = _managerServices.FormTypeService.GetFormTypeBy(name: Name).GetFirst();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -158,16 +127,15 @@ namespace TestWork.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
                 if (formType.Companies?.Count == 0)
                 {
                     return View(formType);
@@ -180,20 +148,19 @@ namespace TestWork.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var formType = myDbConnection.FormTypeById(id.Value).Result.FirstOrDefault();
+                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(myDbConnection.CompaniesList($"WHERE companies.form_type_id = {formType.Id}").Result);
+                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
 
                 if (formType.Companies?.Count == 0)
                 {
-                    await myDbConnection.FormTypeDelete(id.Value);
+                    _managerServices.FormTypeService.DeleteFormType(formType.Id);
                 }
                 else
                 {

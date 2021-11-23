@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Repositories
 {
-    public class CompanyRepository : IRepository<Company>
+    public class CompanyRepository : IRepository<CompanyDAL>
     {
         private MyDb db;
 
@@ -18,7 +18,7 @@ namespace App.DAL.Repositories
             this.db = context;
         }
 
-        public void Create(Company item)
+        public void Create(CompanyDAL item)
         {
             if (db.Companies.TableExist())
             {
@@ -42,7 +42,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Company> Find(Company item)
+        public IEnumerable<CompanyDAL> Find(CompanyDAL item)
         {
             if (db.Companies.TableExist())
             {
@@ -54,7 +54,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Company> GetAll()
+        public IEnumerable<CompanyDAL> GetAll()
         {
             if (db.Companies.TableExist())
             {
@@ -66,11 +66,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public Company GetById(int id)
+        public CompanyDAL GetById(int id)
         {
             if (db.Companies.TableExist())
             {
-                var companies = db.Companies.Find(new Company { Id = id });
+                var companies = db.Companies.Find(new CompanyDAL { Id = id });
                 foreach (var company in companies)
                 {
                     return company;
@@ -83,12 +83,12 @@ namespace App.DAL.Repositories
             }
         }
 
-        public void Update(Company item)
+        public void Update(CompanyDAL item, int? id = null)
         {
 
             if (db.Companies.TableExist())
             {
-                db.Companies.Update(item);
+                db.Companies.Update(item, id);
             }
             else
             {

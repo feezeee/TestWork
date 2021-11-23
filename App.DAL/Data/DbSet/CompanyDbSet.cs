@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Data.DbSet
 {
-    public class CompanyDbSet : IDbSet<Company>
+    public class CompanyDbSet : IDbSet<CompanyDAL>
     {
         private readonly string connectionString;
-        public PositionDbSet(string connectionString)
+        public CompanyDbSet(string connectionString)
         {
             this.connectionString = connectionString;
         }
@@ -28,23 +28,36 @@ namespace App.DAL.Data.DbSet
             connect.Close();
         }
 
-        public void Create(Company item)
+        public void Create(CompanyDAL item)
         {
-            string sql = string.Format("INSERT companies" +
-                "(company_id, company_name, form_type_id) " +
-                "VALUES (@Id,'@Name',@formId) ");
-            OpenConnection();
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            if (item != null)
             {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@Id", item.Id);
-                cmd.Parameters.AddWithValue("@Name", item.Name);
-                cmd.Parameters.AddWithValue("@formId", item.FormTypeId);
+                string sql = string.Format("INSERT companies" +
+                "(company_id, company_name, form_type_id) " +
+                "VALUES (@Id, @Name, @formId) ");
+                OpenConnection();
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter Id = new SqlParameter("@Id", System.Data.SqlDbType.Int);
+                    Id.Value = item.Id;
+                    cmd.Parameters.Add(Id);
 
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+
+                    SqlParameter FormId = new SqlParameter("@formId", System.Data.SqlDbType.Int);
+                    FormId.Value = item.FormTypeId;
+                    cmd.Parameters.Add(FormId);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
         }
 
         public void Delete(int id)
@@ -59,7 +72,7 @@ namespace App.DAL.Data.DbSet
             CloseConnection();
         }
 
-        public IEnumerable<Company> Find(Company item)
+        public IEnumerable<CompanyDAL> Find(CompanyDAL item)
         {
             string where = "";
             if (item != null)
@@ -85,10 +98,21 @@ namespace App.DAL.Data.DbSet
                     {
                         where += $"and companies.company_name = '{item.Name}' ";
                     }
-                }                
+                }
+                if (item.FormTypeId != 0)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE companies.form_type_id = '{item.FormTypeId}' ";
+                    }
+                    else
+                    {
+                        where += $"and companies.form_type_id = '{item.FormTypeId}' ";
+                    }
+                }
             }
 
-            List<Company> companies = new List<Company>();
+            List<CompanyDAL> companies = new List<CompanyDAL>();
             string sql = string.Format("SELECT* FROM companies " +
                  "JOIN form_types ON form_types.form_type_id = companies.form_type_id " + where +
                  "ORDER BY companies.company_id");
@@ -102,12 +126,12 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Company company = new Company
+                            CompanyDAL company = new CompanyDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
                                 FormTypeId = reader.GetInt32(2),
-                                FormType = new FormType
+                                FormType = new FormTypeDAL
                                 {
                                     Id = reader.GetInt32(3),
                                     Name = reader.GetString(4)
@@ -126,9 +150,9 @@ namespace App.DAL.Data.DbSet
             return companies;
         }
 
-        public IEnumerable<Company> GetAll()
+        public IEnumerable<CompanyDAL> GetAll()
         {
-            List<Company> companies = new List<Company>();
+            List<CompanyDAL> companies = new List<CompanyDAL>();
             string sql = string.Format("SELECT* FROM companies " +
                  "JOIN form_types ON form_types.form_type_id = companies.form_type_id " + 
                  "ORDER BY companies.company_id");
@@ -141,12 +165,12 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Company company = new Company
+                            CompanyDAL company = new CompanyDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
                                 FormTypeId = reader.GetInt32(2),
-                                FormType = new FormType
+                                FormType = new FormTypeDAL
                                 {
                                     Id = reader.GetInt32(3),
                                     Name = reader.GetString(4)
@@ -191,23 +215,40 @@ namespace App.DAL.Data.DbSet
             return res;
         }
 
-        public void Update(Company item)
+        public void Update(CompanyDAL item, int? id = null)
         {
-            string sql = string.Format("UPDATE companies " +
-                "SET company_id = @Id, company_name = '@Name', form_type_id = @formId " +
-                "WHERE company_id = @Id ");
-            OpenConnection();
-
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            if (item != null)
             {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@Name", item.Name);
-                cmd.Parameters.AddWithValue("@form_type_id", item.FormTypeId);
-                cmd.Parameters.AddWithValue("@Id", item.Id);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                string sql = string.Format("UPDATE companies " +
+                "SET company_id = @IdNew, company_name = @Name, form_type_id = @formId " +
+                "WHERE company_id = @Id ");
+                OpenConnection();
+
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter Id = new SqlParameter("@Id", System.Data.SqlDbType.Int);
+                    Id.Value = id == null ? item.Id : id;
+                    cmd.Parameters.Add(Id);
+
+                    SqlParameter IdNew = new SqlParameter("@IdNew", System.Data.SqlDbType.Int);
+                    IdNew.Value = item.Id;
+                    cmd.Parameters.Add(IdNew);
+
+
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+
+                    SqlParameter FormId = new SqlParameter("@formId", System.Data.SqlDbType.Int);
+                    FormId.Value = item.FormTypeId;
+                    cmd.Parameters.Add(FormId);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
         }
     }
 }

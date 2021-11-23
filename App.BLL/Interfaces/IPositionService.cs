@@ -5,13 +5,13 @@ namespace App.BLL.Interfaces
 {
     public interface IPositionService
     {
-        void AddPosition(WorkerDTO orderDto);
+        void AddPosition(PositionDTO item);
 
-        IEnumerable<PositionDTO> GetPositionBy(int id, string name);
+        IEnumerable<PositionDTO> GetPositionBy(int id = 0, string name = "");
 
         IEnumerable<PositionDTO> GetPositions();
 
-        void UpdatePosition(PositionDTO worker);
+        void UpdatePosition(PositionDTO item);
 
         void DeletePosition(int id);
         

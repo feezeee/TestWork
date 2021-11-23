@@ -6,7 +6,7 @@ using System;
 
 namespace App.DAL.Repositories
 {
-    public class WorkerRepository : IRepository<Worker>
+    public class WorkerRepository : IRepository<WorkerDAL>
     {
         private MyDb db;
 
@@ -15,7 +15,7 @@ namespace App.DAL.Repositories
             this.db = context;
         }
 
-        public void Create(Worker item)
+        public void Create(WorkerDAL item)
         {
             if (db.Workers.TableExist())
             {
@@ -39,7 +39,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> Find(Worker item)
+        public IEnumerable<WorkerDAL> Find(WorkerDAL item)
         {
             if (db.Workers.TableExist())
             {
@@ -51,7 +51,7 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> GetAll()
+        public IEnumerable<WorkerDAL> GetAll()
         {
             if (db.Workers.TableExist())
             {
@@ -63,11 +63,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public Worker GetById(int id)
+        public WorkerDAL GetById(int id)
         {
             if (db.Workers.TableExist())
             {
-                var workers = db.Workers.Find(new Worker { Id = id });
+                var workers = db.Workers.Find(new WorkerDAL { Id = id });
                 foreach (var worker in workers)
                 {
                     return worker;
@@ -80,12 +80,12 @@ namespace App.DAL.Repositories
             }            
         }
 
-        public void Update(Worker item)
+        public void Update(WorkerDAL item, int? id = null)
         {
 
             if (db.Workers.TableExist())
             {
-                db.Workers.Update(item);
+                db.Workers.Update(item, id);
             }
             else
             {

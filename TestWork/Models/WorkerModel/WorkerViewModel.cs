@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TestWork.Models
 {
     [Table("workers")]
-    public class Worker
+    public class WorkerViewModel
     {
         [Column("Id")]
         public int Id { get; set; }
@@ -36,12 +36,12 @@ namespace TestWork.Models
         [Column("PositionId")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int PositionId { get; set; }
-        public Position Position { get; set; }
+        public PositionViewModel Position { get; set; }
 
 
         [Column("CompanyId")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public CompanyViewModel Company { get; set; }
     }
 }

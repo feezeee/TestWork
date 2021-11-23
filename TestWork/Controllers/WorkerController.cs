@@ -1,27 +1,22 @@
 ﻿using App.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TestWork.Data;
-using TestWork.DTOToModels;
+using TestWork.DTOToViewModels;
+using TestWork.IEnumerableExtension;
 using TestWork.Models;
-using System.Linq;
+using TestWork.ViewModelsToDTO;
 
 namespace TestWork.Controllers
 {
     public class WorkerController : Controller
     {
-        private readonly IConfiguration _config;
-        private readonly string connectionString;
-        private IWorkerService workerService;
+        private readonly IManagerServices _managerServices;
 
-        public WorkerController(IConfiguration config, IWorkerService workerService)
+        public WorkerController(IManagerServices managerServices)
         {
-            _config = config;
-            connectionString = config.GetConnectionString("DefaultConnection");
-            this.workerService = workerService;
+            _managerServices = managerServices;
         }
 
         /// <summary>
@@ -29,124 +24,114 @@ namespace TestWork.Controllers
         /// </summary>
         /// <param name="worker">Фильтрующие данные</param>
         /// <returns></returns>
-        public async Task<IActionResult> List(Worker worker)
+        public async Task<IActionResult> List(WorkerViewModel worker)
         {
-            var test = workerService.GetWorkerBy(worker.Id, worker.LastName, worker.FirstName, worker.MiddleName);
+            var workers = _managerServices.WorkerService.GetWorkerBy(worker.Id, worker.LastName, worker.FirstName, worker.MiddleName);
 
-            List<Worker> workers = new List<Worker>();
-            foreach(var el in test)
-            {
-                workers.Add(el.Worker());
-            }      
+            List<WorkerViewModel> myWorkers = workers.ToList();
 
-            return View(workers);
+            return View(myWorkers);
         }
 
-
+       
         /// <summary>
         /// Вызов форма добавления сотрудника
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
-        {            
+        {
 
-            //ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
-            //ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
+            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions(), "Id", "Name");
+            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies(), "Id", "Name");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Worker worker)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+        public async Task<IActionResult> Create(WorkerViewModel worker)
+        {            
             if (ModelState.IsValid)
-            {           
-                await myDbConnection.WorkerCreate(worker);
-
+            {
+                _managerServices.WorkerService.AddWorker(worker.ToDTO());
                 return RedirectToAction("List");
             }
-            ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
-            ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
+            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions(), "Id", "Name");
+            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies(), "Id", "Name");
             return View(worker);
         }
+        
+       /// <summary>
+       /// Вызов формы редактирования сотрудника
+       /// </summary>
+       /// <param name="id">Индентификатор сотрудника</param>
+       /// <returns></returns>
+       [HttpGet]
+       public IActionResult Edit(int? id)
+       {
+           if (id != null)
+           {                               
+                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
 
-        /// <summary>
-        /// Вызов формы редактирования сотрудника
-        /// </summary>
-        /// <param name="id">Индентификатор сотрудника</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Edit(int? id)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-
-            if (id != null)
-            {
-                var worker = myDbConnection.WorkerById(id.Value).Result.FirstOrDefault();
                 if (worker == null)
                 {
                     return RedirectToAction("List");
                 }
-                ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
-                ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
+                ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions().ToList(), "Id", "Name");
+                ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies().ToList(), "Id", "Name");
                 return View(worker);
-            }
-            return RedirectToAction("List");
-        }
+           }
+           return RedirectToAction("List");
+       }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Worker worker)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+       [HttpPost]
+       public async Task<IActionResult> Edit(WorkerViewModel worker)
+       {
             if (ModelState.IsValid)
             {
-                await myDbConnection.WorkerUpdate(worker);
+                _managerServices.WorkerService.UpdateWorker(worker.ToDTO());
                 return RedirectToAction("List");
             }
-            ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
-            ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
+            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions().ToList(), "Id", "Name");
+            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies().ToList(), "Id", "Name");
             return View(worker);
-        }
-
-        /// <summary>
-        /// Вызов формы удаления сотрудника
-        /// </summary>
-        /// <param name="id">Индентификатор сотрудника</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-            if (id != null)
-            {
-                var worker = myDbConnection.WorkerById(id.Value).Result.FirstOrDefault();
+       }
+        
+       /// <summary>
+       /// Вызов формы удаления сотрудника
+       /// </summary>
+       /// <param name="id">Индентификатор сотрудника</param>
+       /// <returns></returns>
+       [HttpGet]
+       public IActionResult Delete(int? id)
+       {           
+           if (id != null)
+           {
+                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
                 if (worker == null)
                 {
                     return RedirectToAction("List");
                 }
                 return View(worker);
-            }
-            return RedirectToAction("List");
-        }
+           }
+           return RedirectToAction("List");
+       }
 
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-            if (id != null)
-            {
-                var worker = myDbConnection.WorkerById(id.Value).Result.FirstOrDefault();
+       [HttpPost, ActionName("Delete")]
+       public async Task<IActionResult> DeleteConfirmed(int? id)
+       {
+           if (id != null)
+           {
+                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
                 if (worker == null)
                 {
                     return RedirectToAction("List");
                 }
                 else
                 {
-                    await myDbConnection.WorkerDelete(id.Value);
+                    _managerServices.WorkerService.DeleteWorker(id.Value);
                 }
-            }
+           }
             return RedirectToAction("List");
-        }
+       }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Data.DbSet
 {
-    internal class WorkerDbSet : IDbSet<Worker>
+    internal class WorkerDbSet : IDbSet<WorkerDAL>
     {
         private readonly string connectionString;
         public WorkerDbSet(string connectionString)
@@ -30,34 +30,55 @@ namespace App.DAL.Data.DbSet
         }
 
 
-        public void Create(Worker item)
+        public void Create(WorkerDAL item)
         {
-            OpenConnection();
-            string sql = string.Format("INSERT workers " +
-                "(worker_last_mame,worker_first_name,worker_middle_name,worker_date_employment,position_id,company_id) "+
-                "VALUES ('@LastName','@FirstName','@MiddleName','@DateEmployment',@PositionId,@CompanyId) ");
+           if ( item != null)
+           {
 
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
-            {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@LastName", item.LastName);
-                cmd.Parameters.AddWithValue("@FirstName", item.FirstName);
-                cmd.Parameters.AddWithValue("@MiddleName", item.MiddleName);
-                cmd.Parameters.AddWithValue("@DateEmployment", item.DateEmployment.ToShortDateString());
-                cmd.Parameters.AddWithValue("@PositionId", item.PositionId);
-                cmd.Parameters.AddWithValue("@CompanyId", item.CompanyId);
+                string sql = string.Format("INSERT workers " +
+                    "(worker_last_name,worker_first_name,worker_middle_name,worker_date_employment,position_id,company_id) "+
+                    "VALUES (@LastName,@FirstName,@MiddleName,@DateEmployment,@PositionId,@CompanyId) ");
+                OpenConnection();
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter LastName = new SqlParameter("@LastName", System.Data.SqlDbType.NVarChar, 32);
+                    LastName.Value = item.LastName;
 
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
-            }
-            CloseConnection();
-            
+                    SqlParameter FirstName = new SqlParameter("@FirstName", System.Data.SqlDbType.NVarChar, 32);
+                    FirstName.Value = item.FirstName;
+
+                    SqlParameter MiddleName = new SqlParameter("@MiddleName", System.Data.SqlDbType.NVarChar, 32);
+                    MiddleName.Value = item.MiddleName;
+
+                    SqlParameter DateEmployment = new SqlParameter("@DateEmployment", System.Data.SqlDbType.Date);
+                    DateEmployment.Value = item.DateEmployment.Date.ToString("dd.MM.yyyy");
+
+                    SqlParameter PositionId = new SqlParameter("@PositionId", System.Data.SqlDbType.Int);
+                    PositionId.Value = item.PositionId;
+
+                    SqlParameter CompanyId = new SqlParameter("@CompanyId", System.Data.SqlDbType.Int);
+                    CompanyId.Value = item.CompanyId;
+
+                    cmd.Parameters.Add(LastName);
+                    cmd.Parameters.Add(FirstName);
+                    cmd.Parameters.Add(MiddleName);
+                    cmd.Parameters.Add(DateEmployment);
+                    cmd.Parameters.Add(CompanyId);
+                    cmd.Parameters.Add(PositionId);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
+           }
+
         }
 
         public void Delete(int id)
         {
-            OpenConnection();
             string sql = $"DELETE workers WHERE worker_id = {id}";
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 cmd.ExecuteNonQuery();
@@ -67,16 +88,15 @@ namespace App.DAL.Data.DbSet
             CloseConnection();
         }
 
-        public IEnumerable<Worker> GetAll()
+        public IEnumerable<WorkerDAL> GetAll()
         {
-            OpenConnection();
-            List<Worker> workers = new List<Worker>();
+            List<WorkerDAL> workers = new List<WorkerDAL>();
             string sql = string.Format("SELECT* FROM workers " +
                 "JOIN positions ON positions.position_id = workers.position_id " +
                 "JOIN companies ON companies.company_id = workers.company_id " +
                 "JOIN form_types ON form_types.form_type_id = companies.form_type_id " +
                 "ORDER BY workers.worker_id ");
-
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using(SqlDataReader reader = cmd.ExecuteReader())
@@ -85,7 +105,7 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Worker worker = new Worker
+                            WorkerDAL worker = new WorkerDAL
                             {
                                 Id = reader.GetInt32(0),
                                 LastName = reader.GetString(1),
@@ -94,17 +114,17 @@ namespace App.DAL.Data.DbSet
                                 DateEmployment = reader.GetDateTime(4),
                                 PositionId = reader.GetInt32(5),
                                 CompanyId = reader.GetInt32(6),
-                                Position = new Position
+                                Position = new PositionDAL
                                 {
                                     Id = reader.GetInt32(7),
                                     Name = reader.GetString(8)
                                 },
-                                Company = new Company
+                                Company = new CompanyDAL
                                 {
                                     Id = reader.GetInt32(9),
                                     Name = reader.GetString(10),
                                     FormTypeId = reader.GetInt32(11),
-                                    FormType = new FormType
+                                    FormType = new FormTypeDAL
                                     {
                                         Id = reader.GetInt32(12),
                                         Name = reader.GetString(13)
@@ -124,35 +144,62 @@ namespace App.DAL.Data.DbSet
             return workers;
         }               
 
-        public void Update(Worker item)
+        public void Update(WorkerDAL item, int? id = null)
         {
-            OpenConnection();
-            string sql = string.Format("UPDATE workers" +
-                "SET worker_last_mame = '@LastName', worker_first_name = '@FirstName', worker_middle_name = '@MiddleName', worker_date_employment = '@DateEmployment', position_id = @PositionId, company_id = @CompanyId" +
+            if (item != null)
+            {
+                string sql = string.Format("UPDATE workers " +
+                "SET worker_last_name = @LastName, worker_first_name = @FirstName, worker_middle_name = @MiddleName, worker_date_employment = @DateEmployment, position_id = @PositionId, company_id = @CompanyId " +
                 "WHERE worker_id = @Id");
 
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
-            {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@LastName", item.LastName);
-                cmd.Parameters.AddWithValue("@FirstName", item.FirstName);
-                cmd.Parameters.AddWithValue("@MiddleName", item.MiddleName);
-                cmd.Parameters.AddWithValue("@DateEmployment", item.DateEmployment.ToShortDateString());
-                cmd.Parameters.AddWithValue("@PositionId", item.PositionId);
-                cmd.Parameters.AddWithValue("@CompanyId", item.CompanyId);
-                cmd.Parameters.AddWithValue("@Id", item.Id);
+                OpenConnection();
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
 
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                    // Добавить параметры
+                    SqlParameter Id = new SqlParameter("@Id", System.Data.SqlDbType.Int);
+                    Id.Value = id == null ? item.Id : id;
+
+                    SqlParameter LastName = new SqlParameter("@LastName", System.Data.SqlDbType.NVarChar, 32);
+                    LastName.Value = item.LastName;
+
+                    SqlParameter FirstName = new SqlParameter("@FirstName", System.Data.SqlDbType.NVarChar, 32);
+                    FirstName.Value = item.FirstName;
+
+                    SqlParameter MiddleName = new SqlParameter("@MiddleName", System.Data.SqlDbType.NVarChar, 32);
+                    MiddleName.Value = item.MiddleName;
+
+                    SqlParameter DateEmployment = new SqlParameter("@DateEmployment", System.Data.SqlDbType.Date);
+                    DateEmployment.Value = item.DateEmployment.Date.ToString("dd.MM.yyyy");
+
+                    SqlParameter PositionId = new SqlParameter("@PositionId", System.Data.SqlDbType.Int);
+                    PositionId.Value = item.PositionId;
+
+                    SqlParameter CompanyId = new SqlParameter("@CompanyId", System.Data.SqlDbType.Int);
+                    CompanyId.Value = item.CompanyId;
+
+
+                    cmd.Parameters.Add(Id);
+                    cmd.Parameters.Add(LastName);
+                    cmd.Parameters.Add(FirstName);
+                    cmd.Parameters.Add(MiddleName);
+                    cmd.Parameters.Add(DateEmployment);
+                    cmd.Parameters.Add(CompanyId);
+                    cmd.Parameters.Add(PositionId);
+
+
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
-
         }
 
-        public IEnumerable<Worker> Find(Worker item)
+        public IEnumerable<WorkerDAL> Find(WorkerDAL item)
         {
             
-            OpenConnection();
             string where = "";
             if(item != null)
             {
@@ -171,11 +218,11 @@ namespace App.DAL.Data.DbSet
                 {
                     if (where.Length == 0)
                     {
-                        where += $"WHERE workers.worker_last_mame = '{item.LastName}' ";
+                        where += $"WHERE workers.worker_last_name = '{item.LastName}' ";
                     }
                     else
                     {
-                        where += $"and workers.worker_last_mame = '{item.LastName}' ";
+                        where += $"and workers.worker_last_name = '{item.LastName}' ";
                     }
                 }
                 if (item.FirstName != null)
@@ -200,15 +247,41 @@ namespace App.DAL.Data.DbSet
                         where += $"and workers.worker_middle_name = '{item.MiddleName}' ";
                     }
                 }
+                if (item.PositionId != 0)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.position_id = {item.PositionId} ";
+                    }
+                    else
+                    {
+                        where += $"and workers.position_id = {item.PositionId} ";
+                    }
+                }
+                if (item.CompanyId != 0)
+                {
+                    if (where.Length == 0)
+                    {
+                        where += $"WHERE workers.company_id = {item.CompanyId} ";
+                    }
+                    else
+                    {
+                        where += $"and workers.company_id = {item.Company} ";
+                    }
+                }
+
             }
 
-            List<Worker> workers = new List<Worker>();
+            List<WorkerDAL> workers = new List<WorkerDAL>();
             string sql = string.Format("SELECT* FROM workers " +
                 "JOIN positions ON positions.position_id = workers.position_id " +
                 "JOIN companies ON companies.company_id = workers.company_id " +
                 "JOIN form_types ON form_types.form_type_id = companies.form_type_id " +
                 where +
                 "ORDER BY workers.worker_id ");
+
+            OpenConnection();
+
 
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
@@ -218,7 +291,7 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Worker worker = new Worker
+                            WorkerDAL worker = new WorkerDAL
                             {
                                 Id = reader.GetInt32(0),
                                 LastName = reader.GetString(1),
@@ -227,17 +300,17 @@ namespace App.DAL.Data.DbSet
                                 DateEmployment = reader.GetDateTime(4),
                                 PositionId = reader.GetInt32(5),
                                 CompanyId = reader.GetInt32(6),
-                                Position = new Position
+                                Position = new PositionDAL
                                 {
                                     Id = reader.GetInt32(7),
                                     Name = reader.GetString(8)
                                 },
-                                Company = new Company
+                                Company = new CompanyDAL
                                 {
                                     Id = reader.GetInt32(9),
                                     Name = reader.GetString(10),
                                     FormTypeId = reader.GetInt32(11),
-                                    FormType = new FormType
+                                    FormType = new FormTypeDAL
                                     {
                                         Id = reader.GetInt32(12),
                                         Name = reader.GetString(13)
@@ -259,9 +332,10 @@ namespace App.DAL.Data.DbSet
 
         public bool TableExist()
         {
-            OpenConnection();
             string sql = "IF OBJECT_ID('workers') IS NOT NULL SELECT 1 ELSE SELECT 0";
             bool res = false;
+            OpenConnection();
+
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())

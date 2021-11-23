@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace App.DAL.Data.DbSet
 {
-    public class PositionDbSet : IDbSet<Position>
+    public class PositionDbSet : IDbSet<PositionDAL>
     {
         private readonly string connectionString;
         public PositionDbSet(string connectionString)
@@ -30,28 +30,37 @@ namespace App.DAL.Data.DbSet
 
 
 
-        public void Create(Position item)
+        public void Create(PositionDAL item)
         {
-            OpenConnection();
-            string sql = string.Format("INSERT positions " +
-                "(position_name) " +
-                "VALUES ('@PositionName') ");
+            if(item != null)
+            { 
+                string sql = string.Format("INSERT positions " +
+                    "(position_name) " +
+                    "VALUES (@Name) ");
 
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
-            {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@PositionName", item.Name);
+                OpenConnection();
 
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
+
         }
 
         public void Delete(int id)
         {
-            OpenConnection();
+            
             string sql = $"DELETE positions WHERE position_id = {id}";
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 cmd.ExecuteNonQuery();
@@ -60,9 +69,9 @@ namespace App.DAL.Data.DbSet
             CloseConnection();
         }
 
-        public IEnumerable<Position> Find(Position item)
+        public IEnumerable<PositionDAL> Find(PositionDAL item)
         {
-            OpenConnection();
+            
             string where = "";
             if (item != null)
             {
@@ -92,10 +101,10 @@ namespace App.DAL.Data.DbSet
                 }                
             }
 
-            List<Position> positions = new List<Position>();
+            List<PositionDAL> positions = new List<PositionDAL>();
             string sql = string.Format("SELECT* FROM positions " + where +
                 "ORDER BY positions.position_id ");
-
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -104,7 +113,7 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Position position = new Position
+                            PositionDAL position = new PositionDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1)
@@ -122,13 +131,13 @@ namespace App.DAL.Data.DbSet
             return positions;
         }
 
-        public IEnumerable<Position> GetAll()
+        public IEnumerable<PositionDAL> GetAll()
         {
-            OpenConnection();
-            List<Position> positions = new List<Position>();
+            
+            List<PositionDAL> positions = new List<PositionDAL>();
             string sql = string.Format("SELECT* FROM positions " +
                 "ORDER BY positions.position_id ");
-
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -137,7 +146,7 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Position position = new Position
+                            PositionDAL position = new PositionDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1)
@@ -158,9 +167,10 @@ namespace App.DAL.Data.DbSet
 
         public bool TableExist()
         {
-            OpenConnection();
             string sql = "IF OBJECT_ID('positions') IS NOT NULL SELECT 1 ELSE SELECT 0";
             bool res = false;
+            OpenConnection();
+
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -181,23 +191,33 @@ namespace App.DAL.Data.DbSet
             return res;           
         }
 
-        public void Update(Position item)
+        public void Update(PositionDAL item, int? id = null)
         {
-            OpenConnection();
-            string sql = string.Format("UPDATE positions " +
-                "SET position_name = '@Name' " +
+            if (item != null)
+            {
+                string sql = string.Format("UPDATE positions " +
+                "SET position_name = @Name " +
                 "WHERE position_id = @Id ");
 
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
-            {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@Name", item.Name);
-                cmd.Parameters.AddWithValue("@Id", item.Id);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
-            }
-            CloseConnection();
+                OpenConnection();
 
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter Id = new SqlParameter("@Id", System.Data.SqlDbType.Int);
+                    Id.Value = id == null ? item.Id : id;
+                    cmd.Parameters.Add(Id);
+
+
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
+            }
         }
     }
 }

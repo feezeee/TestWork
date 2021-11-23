@@ -27,7 +27,7 @@ CREATE TABLE  positions(
 );
 CREATE TABLE workers(
 	worker_id INT PRIMARY KEY IDENTITY,
-	worker_last_mame VARCHAR(32) NOT NULL,
+	worker_last_name VARCHAR(32) NOT NULL,
 	worker_first_name VARCHAR(32) NOT NULL,
 	worker_middle_name VARCHAR(32) NOT NULL,
 	worker_date_employment DATE NOT NULL,
@@ -39,4 +39,4 @@ CREATE TABLE workers(
 INSERT positions(position_name) VALUES ('Разработчик '),('Тестировщик '),('Бизнес-аналитик'),('Менеджер');
 INSERT form_types(form_type_name) VALUES ('ООО'),('ОАО');
 INSERT companies(company_id, company_name, form_type_id) VALUES (1, 'Qulix Systems', 1);
-INSERT workers(worker_last_mame, worker_first_name, worker_middle_name, worker_date_employment, position_id, company_id) VALUES ('Скурат','Денис','Сергеевич','26.08.2002',1,1);
+INSERT workers(worker_last_name, worker_first_name, worker_middle_name, worker_date_employment, position_id, company_id) VALUES ('Скурат','Денис','Сергеевич','26.08.2002',1,1);

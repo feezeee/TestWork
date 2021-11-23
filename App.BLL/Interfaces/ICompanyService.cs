@@ -9,13 +9,13 @@ namespace App.BLL.Interfaces
 {
     public interface ICompanyService
     {
-        void AddCompany(CompanyDTO orderDto);
+        void AddCompany(CompanyDTO item);
 
-        IEnumerable<CompanyDTO> GetCompanyBy(int id, string name);
+        IEnumerable<CompanyDTO> GetCompanyBy(int id = 0, string name = "", int formTypeId = 0);
 
         IEnumerable<CompanyDTO> GetCompanies();
 
-        void UpdateCompany(CompanyDTO worker);
+        void UpdateCompany(CompanyDTO item, int? id = null);
 
         void DeleteCompany(int id);
 

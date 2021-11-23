@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 namespace App.DAL.Data.DbSet
 {
-    public class FormTypeDbSet : IDbSet<FormType>
+    public class FormTypeDbSet : IDbSet<FormTypeDAL>
     {
         private readonly string connectionString;
         public FormTypeDbSet(string connectionString)
@@ -27,26 +27,33 @@ namespace App.DAL.Data.DbSet
 
 
 
-        public void Create(FormType item)
+        public void Create(FormTypeDAL item)
         {
-            OpenConnection();
-            string sql = string.Format("INSERT form_types " +
-                "(form_type_name) " +
-                "VALUES ('@Name') ");
-
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            if(item != null)
             {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@Name", item.Name);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+
+                string sql = string.Format("INSERT form_types " +
+                    "(form_type_name) " +
+                    "VALUES (@Name) ");
+                OpenConnection();
+
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
         }
         public void Delete(int id)
         {
-            OpenConnection();
             string sql = $"DELETE form_types WHERE form_type_id = {id}";
+            OpenConnection();
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 cmd.ExecuteNonQuery();
@@ -55,9 +62,8 @@ namespace App.DAL.Data.DbSet
             CloseConnection();
         }
 
-        public IEnumerable<FormType> Find(FormType item)
+        public IEnumerable<FormTypeDAL> Find(FormTypeDAL item)
         {
-            OpenConnection();
             string where = "";
             if (item != null)
             {
@@ -87,9 +93,11 @@ namespace App.DAL.Data.DbSet
                 }
             }
 
-            List<FormType> formTypes = new List<FormType>();
+            List<FormTypeDAL> formTypes = new List<FormTypeDAL>();
             string sql = string.Format("SELECT* FROM form_types " + where +
                 "ORDER BY form_types.form_type_id ");
+
+            OpenConnection();
 
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
@@ -99,12 +107,12 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            Position position = new Position
+                            FormTypeDAL form = new FormTypeDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1)
                             };
-                            formTypes.Add(position);
+                            formTypes.Add(form);
                         }
                     }
                     reader.Close();
@@ -117,12 +125,13 @@ namespace App.DAL.Data.DbSet
             return formTypes;
         }
 
-        public IEnumerable<FormType> GetAll()
+        public IEnumerable<FormTypeDAL> GetAll()
         {
-            OpenConnection();
-            List<FormType> formTypes = new List<FormType>();
+            List<FormTypeDAL> formTypes = new List<FormTypeDAL>();
             string sql = string.Format("SELECT* FROM form_types " +
                 "ORDER BY form_types.form_type_id ");
+
+            OpenConnection();
 
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
@@ -132,7 +141,7 @@ namespace App.DAL.Data.DbSet
                     {
                         while (reader.Read()) // построчно считываем данные
                         {
-                            FormType formType = new FormType
+                            FormTypeDAL formType = new FormTypeDAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
@@ -153,9 +162,10 @@ namespace App.DAL.Data.DbSet
 
         public bool TableExist()
         {
-            OpenConnection();
             string sql = "IF OBJECT_ID('form_types') IS NOT NULL SELECT 1 ELSE SELECT 0";
             bool res = false;
+            OpenConnection();
+
             using (SqlCommand cmd = new SqlCommand(sql, this.connect))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -176,22 +186,31 @@ namespace App.DAL.Data.DbSet
             return res;
         }
 
-        public void Update(FormType item)
+        public void Update(FormTypeDAL item, int? id = null)
         {
-            OpenConnection();
-            string sql = string.Format("UPDATE form_types " +
-                "SET form_type_name = '@Name' " +
-                "WHERE form_type_id = @Id ");
-
-            using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+            if (item != null)
             {
-                // Добавить параметры
-                cmd.Parameters.AddWithValue("@Name", item.Name);
-                cmd.Parameters.AddWithValue("@Id", item.Id);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                string sql = string.Format("UPDATE form_types " +
+                "SET form_type_name = @Name " +
+                "WHERE form_type_id = @Id ");
+                OpenConnection();
+                using (SqlCommand cmd = new SqlCommand(sql, this.connect))
+                {
+                    // Добавить параметры
+                    SqlParameter Id = new SqlParameter("@Id", System.Data.SqlDbType.Int);
+                    Id.Value = id == null ? item.Id : id;
+                    cmd.Parameters.Add(Id);
+
+
+                    SqlParameter Name = new SqlParameter("@Name", System.Data.SqlDbType.NVarChar, 32);
+                    Name.Value = item.Name;
+                    cmd.Parameters.Add(Name);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                CloseConnection();
             }
-            CloseConnection();
 
         }
     }

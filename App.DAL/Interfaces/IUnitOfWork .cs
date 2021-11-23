@@ -9,9 +9,9 @@ namespace App.DAL.Interfaces
 {
     public interface IUnitOfWork
     {
-        public IRepository<Worker> Workers { get; }
-        public IRepository<Position> Positions { get; }
-        public IRepository<FormType> FormTypes { get; }
-        public IRepository<Company> Companies { get; }
+        public IRepository<WorkerDAL> Workers { get; }
+        public IRepository<PositionDAL> Positions { get; }
+        public IRepository<FormTypeDAL> FormTypes { get; }
+        public IRepository<CompanyDAL> Companies { get; }
     }
 }

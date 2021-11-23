@@ -9,13 +9,13 @@ namespace App.BLL.Interfaces
 {
     public interface IFormTypeService
     {
-        void AddFormType(FormTypeDTO formTypeDTO);
+        void AddFormType(FormTypeDTO item);
 
-        IEnumerable<FormTypeDTO> GetFormTypeBy(int id, string name);
+        IEnumerable<FormTypeDTO> GetFormTypeBy(int id = 0, string name = "");
 
         IEnumerable<FormTypeDTO> GetFormTypes();
 
-        void UpdateFormType(FormTypeDTO formTypeDTO);
+        void UpdateFormType(FormTypeDTO item);
 
         void DeleteFormType(int id);
 

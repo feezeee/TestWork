@@ -1,24 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using App.BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using TestWork.Data;
+using TestWork.DTOToViewModels;
+using TestWork.IEnumerableExtension;
 using TestWork.Models;
+using TestWork.ViewModelsToDTO;
+
 
 namespace TestWork.Controllers
 {
     public class CompanyController : Controller
     {
-        private readonly IConfiguration _config;
-        private readonly string connectionString;
+        private readonly IManagerServices _managerServices;
 
-        public CompanyController(IConfiguration config)
+        public CompanyController(IManagerServices managerServices)
         {
-            _config = config;
-            connectionString = config.GetConnectionString("DefaultConnection");
+            _managerServices = managerServices;
         }
 
 
@@ -27,42 +26,17 @@ namespace TestWork.Controllers
         /// </summary>
         /// <param name="company">Фильтрующие параметры</param>
         /// <returns></returns>
-        public async Task<IActionResult> List(Company company)
+        public async Task<IActionResult> List(CompanyViewModel company)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+            var companies = _managerServices.CompanyService.GetCompanyBy(id: company.Id, name: company.Name);
 
-            string where = "";
-
-            if (company?.Id != 0)
+            List<CompanyViewModel> myCompanies = companies.ToList();
+            foreach(CompanyViewModel compan in myCompanies)
             {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE companies.company_id = {company.Id} ";
-                }
-                else
-                {
-                    where += $"and companies.company_id = {company.Id} ";
-                }
-            }
-            if (company?.Name != null)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE companies.company_name = '{company.Name}' ";
-                }
-                else
-                {
-                    where += $"and companies.company_name = '{company.Name}' ";
-                }
+                compan.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: compan.Id).ToList());
             }
 
-            var companies = await myDbConnection.CompaniesList(where);
-            foreach (var el in companies)
-            {
-                el.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {el.Id}").Result);
-            }
-
-            return View(companies);
+            return View(myCompanies);
         }
 
 
@@ -73,23 +47,20 @@ namespace TestWork.Controllers
         [HttpGet]
         public ViewResult Create()
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
+            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Company company)
+        public async Task<IActionResult> Create(CompanyViewModel company)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (ModelState.IsValid)
             {
-                await myDbConnection.CompanyCreate(company);
+                _managerServices.CompanyService.AddCompany(company.ToDTO());
 
                 return RedirectToAction("List");
             }
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
+            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
             return View(company);
         }
 
@@ -103,34 +74,40 @@ namespace TestWork.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
+                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
-                    
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
+
+                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
                 
-                ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
+                ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
                 return View(company);
             }
             return RedirectToAction("List");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Company company, int? predId)
+        public async Task<IActionResult> Edit(CompanyViewModel company, int? predId)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (ModelState.IsValid)
             {
-                await myDbConnection.CompanyUpdate(company, predId);
-                return RedirectToAction("List");
+                if(_managerServices.WorkerService.GetWorkerBy(companyId: predId.Value).ToList().Count == 0)
+                {
+                    _managerServices.CompanyService.UpdateCompany(company.ToDTO(), predId);
+                    return RedirectToAction("List");
+                }
+                else
+                {
+                    _managerServices.CompanyService.UpdateCompany(company.ToDTO());
+                    return RedirectToAction("List");
+                }
             }
-            ViewBag.FormTypes = new SelectList(myDbConnection.FormTypesList().Result, "Id", "Name");
+
+            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
             return View(company);
         }
 
@@ -139,13 +116,12 @@ namespace TestWork.Controllers
         /// Проверка индентификатора компании на уникальность
         /// </summary>
         /// <returns></returns>
-        public IActionResult CheckId(int? preId, int id)
+        public IActionResult CheckId(int? predId, int id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
-            if (preId != null)
+            if (predId != null)
             {
-                var res1 = myDbConnection.CompaniesList($"WHERE companies.company_id = {preId}").Result.FirstOrDefault();
-                var res2 = myDbConnection.CompaniesList($"WHERE companies.company_id = {id}").Result.FirstOrDefault();
+                var res1 = _managerServices.CompanyService.GetCompanyBy(id: predId.Value).GetFirst();
+                var res2 = _managerServices.CompanyService.GetCompanyBy(id: id).GetFirst();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -154,7 +130,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = myDbConnection.CompaniesList($"WHERE companies.company_id = {id}").Result.FirstOrDefault();
+                var res3 = _managerServices.CompanyService.GetCompanyBy(id: id).GetFirst();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -170,16 +146,15 @@ namespace TestWork.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
+                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
+                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
                 if (company.Workers?.Count == 0)
                 {
                     return View(company);
@@ -192,20 +167,19 @@ namespace TestWork.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
             if (id != null)
             {
-                var company = myDbConnection.CompanyById(id.Value).Result.FirstOrDefault();
+                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(myDbConnection.WorkersList($"WHERE workers.company_id = {company.Id}").Result);
+                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
 
                 if (company.Workers?.Count == 0)
                 {
-                    await myDbConnection.CompanyDelete(id.Value);
+                    _managerServices.WorkerService.DeleteWorker(id.Value);
                 }
                 else
                 {

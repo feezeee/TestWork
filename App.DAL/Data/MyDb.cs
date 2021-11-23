@@ -16,10 +16,10 @@ namespace App.DAL.Data
             Companies = new CompanyDbSet(_connectionString);
 
         }
-        public IDbSet<Worker> Workers { get; }
-        public IDbSet<Position> Positions { get; }
-        public IDbSet<FormType> FormTypes { get; }
-        public IDbSet<Company> Companies { get; }
+        public IDbSet<WorkerDAL> Workers { get; }
+        public IDbSet<PositionDAL> Positions { get; }
+        public IDbSet<FormTypeDAL> FormTypes { get; }
+        public IDbSet<CompanyDAL> Companies { get; }
 
     }
 }
