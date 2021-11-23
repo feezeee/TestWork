@@ -14,6 +14,10 @@ namespace App.DAL.Repositories
     {
         private MyDb db;
         private WorkerRepository workerRepository;
+        private PositionRepository positionRepository;
+        private FormTypeRepository formTypeRepository;
+        private CompanyRepository companyRepository;
+
 
         public MyUnitOfWork(IConfiguration configuration)
         {
@@ -30,10 +34,34 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IRepository<Position> Positions => throw new NotImplementedException();
+        public IRepository<Position> Positions
+        {
+            get
+            {
+                if (positionRepository == null)
+                    positionRepository = new PositionRepository(db);
+                return positionRepository;
+            }
+        }
 
-        public IRepository<FormType> FormTypes => throw new NotImplementedException();
+        public IRepository<FormType> FormTypes
+        {
+            get
+            {
+                if (formTypeRepository == null)
+                    formTypeRepository = new FormTypeRepository(db);
+                return formTypeRepository;
+            }
+        }
 
-        public IRepository<Company> Companies => throw new NotImplementedException();
+        public IRepository<Company> Companies
+        {
+            get
+            {
+                if (companyRepository == null)
+                    companyRepository = new CompanyRepository(db);
+                return companyRepository;
+            }
+        }
     }
 }

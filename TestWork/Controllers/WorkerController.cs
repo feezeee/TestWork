@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TestWork.Data;
-using TestWork.Models;
 using TestWork.DTOToModels;
+using TestWork.Models;
+using System.Linq;
 
 namespace TestWork.Controllers
 {
@@ -32,69 +31,15 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public async Task<IActionResult> List(Worker worker)
         {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+            var test = workerService.GetWorkerBy(worker.Id, worker.LastName, worker.FirstName, worker.MiddleName);
 
-            var test = workerService.GetWorkers();
-
-
-
-
-            List<Worker> workers1 = new List<Worker>();
+            List<Worker> workers = new List<Worker>();
             foreach(var el in test)
             {
-                workers1.Add(el.Worker());
-            }
+                workers.Add(el.Worker());
+            }      
 
-
-            string where = "";
-            if (worker?.Id != 0)
-            {
-                if(where.Length == 0)
-                {
-                    where += $"WHERE workers.worker_id = {worker.Id} ";
-                }
-                else
-                {
-                    where += $"and workers.worker_id = {worker.Id} ";
-                }
-            }
-            if (worker?.LastName != null)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE workers.worker_last_mame = '{worker.LastName}' ";
-                }
-                else
-                {
-                    where += $"and workers.worker_last_mame = '{worker.LastName}' ";
-                }
-            }
-            if (worker?.FirstName != null)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE workers.worker_first_name = '{worker.FirstName}' ";
-                }
-                else
-                {
-                    where += $"and workers.worker_first_name = '{worker.FirstName}' ";
-                }
-            }
-            if (worker?.MiddleName != null)
-            {
-                if (where.Length == 0)
-                {
-                    where += $"WHERE workers.worker_middle_name = '{worker.MiddleName}' ";
-                }
-                else
-                {
-                    where += $"and workers.worker_middle_name = '{worker.MiddleName}' ";
-                }
-            }            
-
-            var workers = await myDbConnection.WorkersList(where);
-
-            return View(workers1);
+            return View(workers);
         }
 
 
@@ -104,11 +49,10 @@ namespace TestWork.Controllers
         /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
-        {
-            MyDbConnection myDbConnection = new MyDbConnection(_config);
+        {            
 
-            ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
-            ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
+            //ViewBag.Positions = new SelectList(myDbConnection.PositionsList().Result, "Id", "Name");
+            //ViewBag.Companies = new SelectList(myDbConnection.CompaniesList().Result, "Id", "Name");
             return View();
         }
 

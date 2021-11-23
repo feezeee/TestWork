@@ -1,25 +1,28 @@
 ﻿using App.DAL.Data;
 using App.DAL.Interfaces;
 using App.DAL.Models;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace App.DAL.Repositories
 {
-    public class WorkerRepository : IRepository<Worker>
+    public class FormTypeRepository : IRepository<FormType>
     {
         private MyDb db;
 
-        public WorkerRepository(MyDb context)
+        public FormTypeRepository(MyDb context)
         {
             this.db = context;
         }
 
-        public void Create(Worker item)
+        public void Create(FormType item)
         {
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                db.Workers.Create(item);
+                db.FormTypes.Create(item);
             }
             else
             {
@@ -29,9 +32,9 @@ namespace App.DAL.Repositories
 
         public void Delete(int id)
         {
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                db.Workers.Delete(id);               
+                db.FormTypes.Delete(id);
             }
             else
             {
@@ -39,11 +42,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> Find(Worker item)
+        public IEnumerable<FormType> Find(FormType item)
         {
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                return db.Workers.Find(item);
+                return db.FormTypes.Find(item);
             }
             else
             {
@@ -51,11 +54,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> GetAll()
+        public IEnumerable<FormType> GetAll()
         {
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                return db.Workers.GetAll();
+                return db.FormTypes.GetAll();
             }
             else
             {
@@ -63,29 +66,29 @@ namespace App.DAL.Repositories
             }
         }
 
-        public Worker GetById(int id)
+        public FormType GetById(int id)
         {
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                var workers = db.Workers.Find(new Worker { Id = id });
-                foreach (var worker in workers)
+                var formTypes = db.FormTypes.Find(new FormType { Id = id });
+                foreach (var form in formTypes)
                 {
-                    return worker;
+                    return form;
                 }
                 return null;
             }
             else
             {
                 throw new NullReferenceException("Таблица работников не существует");
-            }            
+            }
         }
 
-        public void Update(Worker item)
+        public void Update(FormType item)
         {
 
-            if (db.Workers.TableExist())
+            if (db.FormTypes.TableExist())
             {
-                db.Workers.Update(item);
+                db.FormTypes.Update(item);
             }
             else
             {

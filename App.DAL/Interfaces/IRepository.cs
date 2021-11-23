@@ -11,7 +11,7 @@ namespace App.DAL.Interfaces
     {
         public IEnumerable<T> GetAll();
         public T GetById(int id);
-        public IEnumerable<T> Find(Worker worker);
+        public IEnumerable<T> Find(T item);
         public void Create(T item);
         public void Update(T item);
         public void Delete(int id);

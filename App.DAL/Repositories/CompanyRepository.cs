@@ -1,25 +1,28 @@
 ﻿using App.DAL.Data;
 using App.DAL.Interfaces;
 using App.DAL.Models;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace App.DAL.Repositories
 {
-    public class WorkerRepository : IRepository<Worker>
+    public class CompanyRepository : IRepository<Company>
     {
         private MyDb db;
 
-        public WorkerRepository(MyDb context)
+        public CompanyRepository(MyDb context)
         {
             this.db = context;
         }
 
-        public void Create(Worker item)
+        public void Create(Company item)
         {
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                db.Workers.Create(item);
+                db.Companies.Create(item);
             }
             else
             {
@@ -29,9 +32,9 @@ namespace App.DAL.Repositories
 
         public void Delete(int id)
         {
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                db.Workers.Delete(id);               
+                db.Companies.Delete(id);
             }
             else
             {
@@ -39,11 +42,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> Find(Worker item)
+        public IEnumerable<Company> Find(Company item)
         {
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                return db.Workers.Find(item);
+                return db.Companies.Find(item);
             }
             else
             {
@@ -51,11 +54,11 @@ namespace App.DAL.Repositories
             }
         }
 
-        public IEnumerable<Worker> GetAll()
+        public IEnumerable<Company> GetAll()
         {
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                return db.Workers.GetAll();
+                return db.Companies.GetAll();
             }
             else
             {
@@ -63,29 +66,29 @@ namespace App.DAL.Repositories
             }
         }
 
-        public Worker GetById(int id)
+        public Company GetById(int id)
         {
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                var workers = db.Workers.Find(new Worker { Id = id });
-                foreach (var worker in workers)
+                var companies = db.Companies.Find(new Company { Id = id });
+                foreach (var company in companies)
                 {
-                    return worker;
+                    return company;
                 }
                 return null;
             }
             else
             {
                 throw new NullReferenceException("Таблица работников не существует");
-            }            
+            }
         }
 
-        public void Update(Worker item)
+        public void Update(Company item)
         {
 
-            if (db.Workers.TableExist())
+            if (db.Companies.TableExist())
             {
-                db.Workers.Update(item);
+                db.Companies.Update(item);
             }
             else
             {

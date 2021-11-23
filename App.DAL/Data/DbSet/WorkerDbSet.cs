@@ -48,6 +48,7 @@ namespace App.DAL.Data.DbSet
                 cmd.Parameters.AddWithValue("@CompanyId", item.CompanyId);
 
                 cmd.ExecuteNonQuery();
+                cmd.Dispose();
             }
             CloseConnection();
             
@@ -142,6 +143,7 @@ namespace App.DAL.Data.DbSet
                 cmd.Parameters.AddWithValue("@Id", item.Id);
 
                 cmd.ExecuteNonQuery();
+                cmd.Dispose();
             }
             CloseConnection();
 

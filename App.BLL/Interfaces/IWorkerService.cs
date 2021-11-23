@@ -7,7 +7,7 @@ namespace App.BLL.Interfaces
     {
         void AddWorker(WorkerDTO orderDto);
 
-        IEnumerable<WorkerDTO> GetWorkerBy(int? id, string lastName, string firstName, string middleName);
+        IEnumerable<WorkerDTO> GetWorkerBy(int id, string lastName, string firstName, string middleName);
 
         IEnumerable<WorkerDTO> GetWorkers();
 

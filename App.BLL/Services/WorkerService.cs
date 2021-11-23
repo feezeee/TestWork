@@ -29,7 +29,7 @@ namespace App.BLL.Services
                     DateEmployment = item.DateEmployment
                 };
 
-                Database.Workers.Create(worker);throw new NullReferenceException(ex.Message);
+                Database.Workers.Create(worker);
             
             
         }
@@ -131,18 +131,18 @@ namespace App.BLL.Services
             Database.Workers.Update(worker);
         }
 
-        public IEnumerable<WorkerDTO> GetWorkerBy(int? id, string lastName, string firstName, string middleName)
+        public IEnumerable<WorkerDTO> GetWorkerBy(int id, string lastName, string firstName, string middleName)
         {
             Worker item = null;
-            if (id != null)
+            if (id != 0)
             {
                 if(item == null)
                 {
                     item = new Worker();
                 }
-                item.Id = id.Value;
+                item.Id = id;
             }
-            if (String.IsNullOrEmpty(lastName))
+            if (!String.IsNullOrEmpty(lastName))
             {
                 if (item == null)
                 {
@@ -150,7 +150,7 @@ namespace App.BLL.Services
                 }
                 item.LastName = lastName;
             }
-            if (String.IsNullOrEmpty(firstName))
+            if (!String.IsNullOrEmpty(firstName))
             {
                 if (item == null)
                 {
@@ -158,7 +158,7 @@ namespace App.BLL.Services
                 }
                 item.FirstName = firstName;
             }
-            if (String.IsNullOrEmpty(middleName))
+            if (!String.IsNullOrEmpty(middleName))
             {
                 if (item == null)
                 {
