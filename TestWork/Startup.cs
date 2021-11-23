@@ -1,3 +1,8 @@
+using App.BLL.Infrastructure;
+using App.BLL.Interfaces;
+using App.BLL.Services;
+using App.DAL.Interfaces;
+using App.DAL.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,6 +28,8 @@ namespace TestWork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IUnitOfWork, MyUnitOfWork>();
+            services.AddTransient<IWorkerService, WorkerService>();
             services.AddControllersWithViews();
         }
 

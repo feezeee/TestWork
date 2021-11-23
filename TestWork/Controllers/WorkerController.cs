@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using App.BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestWork.Data;
 using TestWork.Models;
+using TestWork.DTOToModels;
 
 namespace TestWork.Controllers
 {
@@ -14,11 +16,13 @@ namespace TestWork.Controllers
     {
         private readonly IConfiguration _config;
         private readonly string connectionString;
+        private IWorkerService workerService;
 
-        public WorkerController(IConfiguration config)
+        public WorkerController(IConfiguration config, IWorkerService workerService)
         {
             _config = config;
             connectionString = config.GetConnectionString("DefaultConnection");
+            this.workerService = workerService;
         }
 
         /// <summary>
@@ -29,6 +33,16 @@ namespace TestWork.Controllers
         public async Task<IActionResult> List(Worker worker)
         {
             MyDbConnection myDbConnection = new MyDbConnection(_config);
+
+            var test = workerService.GetWorkers();
+
+            List<Worker> workers1 = new List<Worker>();
+            foreach(var el in test)
+            {
+                workers1.Add(el.Worker());
+            }
+
+
             string where = "";
             if (worker?.Id != 0)
             {
@@ -77,7 +91,7 @@ namespace TestWork.Controllers
 
             var workers = await myDbConnection.WorkersList(where);
 
-            return View(workers);
+            return View(workers1);
         }
 
 
