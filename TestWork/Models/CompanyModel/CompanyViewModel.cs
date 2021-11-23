@@ -13,7 +13,7 @@ namespace TestWork.Models
     {
         [Column("Id")]
         [Remote(action: "CheckId", controller: "Company", AdditionalFields = "predId", ErrorMessage = "Компания с таким индентификатором уже существует!", HttpMethod = "POST")]
-        [RegularExpression(@"\d*", ErrorMessage = "Некорректный индентификатор")]
+        [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "Некорректный индентификатор")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         public int Id { get; set; }
 
