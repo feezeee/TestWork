@@ -26,7 +26,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
             }
         }
 
@@ -38,7 +38,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
             }
         }
 
@@ -50,7 +50,8 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
+
             }
         }
 
@@ -62,7 +63,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
             }
         }
 
@@ -79,7 +80,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
             }
         }
 
@@ -92,7 +93,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица компаний не существует");
             }
         }
     }

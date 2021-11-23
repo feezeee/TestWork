@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using App.BLL.DTOToDAL;
 using App.BLL.DALToDTO;
+using System.Threading.Tasks;
 
 namespace App.BLL.Services
 {
@@ -83,6 +84,31 @@ namespace App.BLL.Services
         {
             CompanyDAL company = item.ToDAL();
             Database.Companies.Update(company, id);
+        }
+
+        public async Task AddCompanyAsync(CompanyDTO item)
+        {
+            await Task.Run(() => AddCompany(item));
+        }
+
+        public async Task<IEnumerable<CompanyDTO>> GetCompaniesAsync()
+        {
+            return await Task.Run(() => GetCompanies());
+        }
+
+        public async Task<IEnumerable<CompanyDTO>> GetCompanyByAsync(int id = 0, string name = "", int formTypeId = 0)
+        {
+            return await Task.Run(() => GetCompanyBy(id, name, formTypeId));
+        }
+
+        public async Task UpdateCompanyAsync(CompanyDTO item, int? id = null)
+        {
+            await Task.Run(() => UpdateCompany(item, id));
+        }
+
+        public async Task DeleteCompanyAsync(int id)
+        {
+            await Task.Run(() => DeleteCompany(id));
         }
     }
 }

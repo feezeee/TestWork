@@ -20,5 +20,12 @@ namespace App.BLL.Interfaces
         void DeleteFormType(int id);
 
 
+        Task AddFormTypeAsync(FormTypeDTO item);
+        Task<IEnumerable<FormTypeDTO>> GetFormTypesAsync();
+        Task<IEnumerable<FormTypeDTO>> GetFormTypeByAsync(int id = 0, string name = "");
+        Task UpdateFormTypeAsync(FormTypeDTO item);
+        Task DeleteFormTypeAsync(int id);
+
+
     }
 }

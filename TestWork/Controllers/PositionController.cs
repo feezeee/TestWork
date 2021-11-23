@@ -25,7 +25,7 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public async Task<IActionResult> List(PositionViewModel position)
         {
-            var positions = _managerServices.PositionService.GetPositionBy(position.Id, position.Name);
+            var positions = await _managerServices.PositionService.GetPositionByAsync(position.Id, position.Name);
 
             List<PositionViewModel> myPositions = positions.ToList();
             
@@ -39,12 +39,12 @@ namespace TestWork.Controllers
         /// <param name="Id">Индентификатор должности</param>
         /// <param name="Name">Наименование должности</param>
         /// <returns></returns>
-        public IActionResult CheckPosition(int? Id, string Name)
+        public async Task<IActionResult> CheckPosition(int? Id, string Name)
         {
             if (Id != null)
             {
-                var res1 = _managerServices.PositionService.GetPositionBy(id: Id.Value).GetFirst();
-                var res2 = _managerServices.PositionService.GetPositionBy(name: Name).GetFirst();
+                var res1 = (await _managerServices.PositionService.GetPositionByAsync(id: Id.Value)).GetFirst();
+                var res2 = (await _managerServices.PositionService.GetPositionByAsync(name: Name)).GetFirst();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -53,7 +53,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = _managerServices.PositionService.GetPositionBy(name: Name).GetFirst();
+                var res3 = (await _managerServices.PositionService.GetPositionByAsync(name: Name)).GetFirst();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -76,7 +76,7 @@ namespace TestWork.Controllers
         {
             if (ModelState.IsValid)
             {
-                _managerServices.PositionService.AddPosition(position.ToDTO());
+                await _managerServices.PositionService.AddPositionAsync(position.ToDTO());
 
                 return RedirectToAction("List");
             }
@@ -91,17 +91,17 @@ namespace TestWork.Controllers
         /// <returns></returns>
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
 
             if (id != null)
             {
-                var position = _managerServices.PositionService.GetPositionBy(id.Value).GetFirst().ToViewModel();
+                var position = (await _managerServices.PositionService.GetPositionByAsync(id.Value)).GetFirst().ToViewModel();
                 if (position == null)
                 {
                     return RedirectToAction("List");
                 }
-                position.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(positionId: position.Id).ToList());
+                position.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(positionId: position.Id)).ToList());
                 return View(position);
             }
             return RedirectToAction("List");
@@ -112,11 +112,11 @@ namespace TestWork.Controllers
         {
             if (ModelState.IsValid)
             {
-                _managerServices.PositionService.UpdatePosition(position.ToDTO());
+                await _managerServices.PositionService.UpdatePositionAsync(position.ToDTO());
                 return RedirectToAction("List");
             }
 
-            position.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(positionId: position.Id).ToList());
+            position.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(positionId: position.Id)).ToList());
 
             return View(position);
         }
@@ -128,17 +128,17 @@ namespace TestWork.Controllers
         /// <param name="id">Индентификатор сотрудника</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {            
             if (id != null)
             {
-                var position = _managerServices.PositionService.GetPositionBy(id: id.Value).GetFirst().ToViewModel();
+                var position = (await _managerServices.PositionService.GetPositionByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (position == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                position.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(positionId: position.Id).ToList());
+                position.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(positionId: position.Id)).ToList());
 
                 if (position.Workers?.Count == 0)
                 {
@@ -154,17 +154,17 @@ namespace TestWork.Controllers
         {
             if (id != null)
             {
-                var position = _managerServices.PositionService.GetPositionBy(id: id.Value).GetFirst().ToViewModel();
+                var position = (await _managerServices.PositionService.GetPositionByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (position == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                position.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(positionId: position.Id).ToList());
+                position.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(positionId: position.Id)).ToList());
 
                 if (position.Workers?.Count == 0)
                 {                    
-                    _managerServices.PositionService.DeletePosition(id.Value);
+                    await _managerServices.PositionService.DeletePositionAsync(id.Value);
                 }
                 else
                 {

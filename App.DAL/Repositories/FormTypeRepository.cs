@@ -26,7 +26,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
 
@@ -38,7 +38,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
 
@@ -50,7 +50,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
 
@@ -62,7 +62,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
 
@@ -79,7 +79,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
 
@@ -92,7 +92,7 @@ namespace App.DAL.Repositories
             }
             else
             {
-                throw new NullReferenceException("Таблица работников не существует");
+                throw new NullReferenceException("Таблица ОПФ не существует");
             }
         }
     }

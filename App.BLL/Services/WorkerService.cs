@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using App.BLL.DTOToDAL;
 using App.BLL.DALToDTO;
+using System.Threading.Tasks;
 
 namespace App.BLL.Services
 {
@@ -111,6 +112,31 @@ namespace App.BLL.Services
 
                 yield return myworker;
             }
+        }
+
+        public async Task AddWorkerAsync(WorkerDTO item)
+        {
+            await Task.Run(() => AddWorker(item));
+        }
+
+        public async Task<IEnumerable<WorkerDTO>> GetWorkersAsync()
+        {
+            return await Task.Run(() => GetWorkers());
+        }
+
+        public async Task<IEnumerable<WorkerDTO>> GetWorkerByAsync(int id = 0, string lastName = "", string firstName = "", string middleName = "", int positionId = 0, int companyId = 0)
+        {
+            return await Task.Run(() => GetWorkerBy(id, lastName, firstName, middleName, positionId, companyId)); 
+        }
+
+        public async Task UpdateWorkerAsync(WorkerDTO item)
+        {
+            await Task.Run(() => UpdateWorker(item));
+        }
+
+        public async Task DeleteWorkerAsync(int id)
+        {
+            await Task.Run(() => DeleteWorker(id));
         }
     }
 }

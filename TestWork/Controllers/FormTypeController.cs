@@ -26,7 +26,7 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public async Task<IActionResult> List(FormTypeViewModel formType)
         {
-            var forms  = _managerServices.FormTypeService.GetFormTypeBy(formType.Id, formType.Name);
+            var forms  = await _managerServices.FormTypeService.GetFormTypeByAsync(formType.Id, formType.Name);
 
             List<FormTypeViewModel> myForms = forms.ToList();
 
@@ -40,7 +40,7 @@ namespace TestWork.Controllers
         /// <returns></returns>
         [HttpGet]
         public ViewResult Create()
-        {            
+        {
             return View();
         }
 
@@ -49,7 +49,7 @@ namespace TestWork.Controllers
         {            
             if (ModelState.IsValid)
             {
-                _managerServices.FormTypeService.AddFormType(formType.ToDTO());
+                await _managerServices.FormTypeService.AddFormTypeAsync(formType.ToDTO());
 
                 return RedirectToAction("List");
             }
@@ -63,17 +63,17 @@ namespace TestWork.Controllers
         /// <param name="id">Индентификатор ОПФ</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id != null)
             {
-                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
+                var formType = (await _managerServices.FormTypeService.GetFormTypeByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: id.Value).ToList());
+                formType.Companies.AddRange((await _managerServices.CompanyService.GetCompanyByAsync(formTypeId: id.Value)).ToList());
                 return View(formType);
             }
             return RedirectToAction("List");
@@ -84,10 +84,10 @@ namespace TestWork.Controllers
         {
             if (ModelState.IsValid)
             {
-                _managerServices.FormTypeService.UpdateFormType(formType.ToDTO());
+                await _managerServices.FormTypeService.UpdateFormTypeAsync(formType.ToDTO());
                 return RedirectToAction("List");
             }
-            formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
+            formType.Companies.AddRange((await _managerServices.CompanyService.GetCompanyByAsync(formTypeId: formType.Id)).ToList());
             return View(formType);
         }
 
@@ -98,12 +98,12 @@ namespace TestWork.Controllers
         /// <param name="Id">Индентификатор ОПФ</param>
         /// <param name="Name">Наименование ОПФ</param>
         /// <returns></returns>
-        public IActionResult CheckFormType(int? Id, string Name)
+        public async Task<IActionResult> CheckFormType(int? Id, string Name)
         {
             if (Id != null)
             {
-                var res1 = _managerServices.FormTypeService.GetFormTypeBy(id: Id.Value).GetFirst();
-                var res2 = _managerServices.FormTypeService.GetFormTypeBy(name: Name).GetFirst();
+                var res1 = (await _managerServices.FormTypeService.GetFormTypeByAsync(id: Id.Value)).GetFirst();
+                var res2 = (await _managerServices.FormTypeService.GetFormTypeByAsync(name: Name)).GetFirst();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -112,7 +112,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = _managerServices.FormTypeService.GetFormTypeBy(name: Name).GetFirst();
+                var res3 = (await _managerServices.FormTypeService.GetFormTypeByAsync(name: Name)).GetFirst();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -125,17 +125,17 @@ namespace TestWork.Controllers
         /// <param name="id">Индентификатор ОПФ</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id != null)
             {
-                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
+                var formType = (await _managerServices.FormTypeService.GetFormTypeByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
+                formType.Companies.AddRange((await _managerServices.CompanyService.GetCompanyByAsync(formTypeId: formType.Id)).ToList());
                 if (formType.Companies?.Count == 0)
                 {
                     return View(formType);
@@ -150,17 +150,17 @@ namespace TestWork.Controllers
         {
             if (id != null)
             {
-                var formType = _managerServices.FormTypeService.GetFormTypeBy(id: id.Value).GetFirst().ToViewModel();
+                var formType = (await _managerServices.FormTypeService.GetFormTypeByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (formType == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                formType.Companies.AddRange(_managerServices.CompanyService.GetCompanyBy(formTypeId: formType.Id).ToList());
+                formType.Companies.AddRange((await _managerServices.CompanyService.GetCompanyByAsync(formTypeId: formType.Id)).ToList());
 
                 if (formType.Companies?.Count == 0)
                 {
-                    _managerServices.FormTypeService.DeleteFormType(formType.Id);
+                    await _managerServices.FormTypeService.DeleteFormTypeAsync(formType.Id);
                 }
                 else
                 {

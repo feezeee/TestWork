@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using App.BLL.DTOToDAL;
 using App.BLL.DALToDTO;
+using System.Threading.Tasks;
 
 namespace App.BLL.Services
 {
@@ -75,6 +76,31 @@ namespace App.BLL.Services
         public void UpdateFormType(FormTypeDTO item)
         {
             Database.FormTypes.Update(item.ToDAL());
+        }
+
+        public async Task AddFormTypeAsync(FormTypeDTO item)
+        {
+            await Task.Run(() => AddFormType(item));
+        }
+
+        public async Task<IEnumerable<FormTypeDTO>> GetFormTypesAsync()
+        {
+            return await Task.Run(() => GetFormTypes());
+        }
+
+        public async Task<IEnumerable<FormTypeDTO>> GetFormTypeByAsync(int id = 0, string name = "")
+        {
+            return await Task.Run(() => GetFormTypeBy(id, name));
+        }
+
+        public async Task UpdateFormTypeAsync(FormTypeDTO item)
+        {
+            await Task.Run(() => UpdateFormType(item));
+        }
+
+        public async Task DeleteFormTypeAsync(int id)
+        {
+            await Task.Run(() => DeleteFormType(id));
         }
     }
 }

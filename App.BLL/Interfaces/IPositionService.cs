@@ -1,5 +1,6 @@
 ﻿using App.BLL.DTO;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace App.BLL.Interfaces
 {
@@ -14,7 +15,12 @@ namespace App.BLL.Interfaces
         void UpdatePosition(PositionDTO item);
 
         void DeletePosition(int id);
-        
+
+        Task AddPositionAsync(PositionDTO item);
+        Task<IEnumerable<PositionDTO>> GetPositionsAsync();
+        Task<IEnumerable<PositionDTO>> GetPositionByAsync(int id = 0, string name = "");
+        Task UpdatePositionAsync(PositionDTO item);
+        Task DeletePositionAsync(int id);
 
     }
 }

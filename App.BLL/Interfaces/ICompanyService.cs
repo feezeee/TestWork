@@ -20,5 +20,12 @@ namespace App.BLL.Interfaces
         void DeleteCompany(int id);
 
 
+        Task AddCompanyAsync(CompanyDTO item);
+        Task<IEnumerable<CompanyDTO>> GetCompaniesAsync();
+        Task<IEnumerable<CompanyDTO>> GetCompanyByAsync(int id = 0, string name = "", int formTypeId = 0);
+        Task UpdateCompanyAsync(CompanyDTO item, int? id = null);
+        Task DeleteCompanyAsync(int id);
+
+
     }
 }

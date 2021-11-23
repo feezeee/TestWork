@@ -26,7 +26,7 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public async Task<IActionResult> List(WorkerViewModel worker)
         {
-            var workers = _managerServices.WorkerService.GetWorkerBy(worker.Id, worker.LastName, worker.FirstName, worker.MiddleName);
+            var workers = await _managerServices.WorkerService.GetWorkerByAsync(worker.Id, worker.LastName, worker.FirstName, worker.MiddleName);
 
             List<WorkerViewModel> myWorkers = workers.ToList();
 
@@ -39,11 +39,11 @@ namespace TestWork.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult Create()
+        public async Task<IActionResult> Create()
         {
 
-            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions(), "Id", "Name");
-            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies(), "Id", "Name");
+            ViewBag.Positions = new SelectList((await _managerServices.PositionService.GetPositionsAsync()).ToList(), "Id", "Name");
+            ViewBag.Companies = new SelectList((await _managerServices.CompanyService.GetCompaniesAsync()).ToList(), "Id", "Name");
             return View();
         }
 
@@ -52,11 +52,11 @@ namespace TestWork.Controllers
         {            
             if (ModelState.IsValid)
             {
-                _managerServices.WorkerService.AddWorker(worker.ToDTO());
+                await _managerServices.WorkerService.AddWorkerAsync(worker.ToDTO());
                 return RedirectToAction("List");
             }
-            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions(), "Id", "Name");
-            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies(), "Id", "Name");
+            ViewBag.Positions = new SelectList((await _managerServices.PositionService.GetPositionsAsync()).ToList(), "Id", "Name");
+            ViewBag.Companies = new SelectList((await _managerServices.CompanyService.GetCompaniesAsync()).ToList(), "Id", "Name");
             return View(worker);
         }
         
@@ -66,18 +66,18 @@ namespace TestWork.Controllers
        /// <param name="id">Индентификатор сотрудника</param>
        /// <returns></returns>
        [HttpGet]
-       public IActionResult Edit(int? id)
+       public async Task<IActionResult> Edit(int? id)
        {
            if (id != null)
-           {                               
-                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
+           {
+                var worker = (await _managerServices.WorkerService.GetWorkerByAsync(id.Value)).GetFirst().ToViewModel();
 
                 if (worker == null)
                 {
                     return RedirectToAction("List");
                 }
-                ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions().ToList(), "Id", "Name");
-                ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies().ToList(), "Id", "Name");
+                ViewBag.Positions = new SelectList((await _managerServices.PositionService.GetPositionsAsync()).ToList(), "Id", "Name");
+                ViewBag.Companies = new SelectList((await _managerServices.CompanyService.GetCompaniesAsync()).ToList(), "Id", "Name");
                 return View(worker);
            }
            return RedirectToAction("List");
@@ -88,11 +88,11 @@ namespace TestWork.Controllers
        {
             if (ModelState.IsValid)
             {
-                _managerServices.WorkerService.UpdateWorker(worker.ToDTO());
+                await _managerServices.WorkerService.UpdateWorkerAsync(worker.ToDTO());
                 return RedirectToAction("List");
             }
-            ViewBag.Positions = new SelectList(_managerServices.PositionService.GetPositions().ToList(), "Id", "Name");
-            ViewBag.Companies = new SelectList(_managerServices.CompanyService.GetCompanies().ToList(), "Id", "Name");
+            ViewBag.Positions = new SelectList((await _managerServices.PositionService.GetPositionsAsync()).ToList(), "Id", "Name");
+            ViewBag.Companies = new SelectList((await _managerServices.CompanyService.GetCompaniesAsync()).ToList(), "Id", "Name");
             return View(worker);
        }
         
@@ -102,11 +102,11 @@ namespace TestWork.Controllers
        /// <param name="id">Индентификатор сотрудника</param>
        /// <returns></returns>
        [HttpGet]
-       public IActionResult Delete(int? id)
+       public async Task<IActionResult> Delete(int? id)
        {           
            if (id != null)
            {
-                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
+                var worker = (await _managerServices.WorkerService.GetWorkerByAsync(id.Value)).GetFirst().ToViewModel();
                 if (worker == null)
                 {
                     return RedirectToAction("List");
@@ -120,15 +120,15 @@ namespace TestWork.Controllers
        public async Task<IActionResult> DeleteConfirmed(int? id)
        {
            if (id != null)
-           {
-                var worker = _managerServices.WorkerService.GetWorkerBy(id.Value).GetFirst().ToViewModel();
+            {
+                var worker = (await _managerServices.WorkerService.GetWorkerByAsync(id.Value)).GetFirst().ToViewModel();
                 if (worker == null)
                 {
                     return RedirectToAction("List");
                 }
                 else
                 {
-                    _managerServices.WorkerService.DeleteWorker(id.Value);
+                    await _managerServices.WorkerService.DeleteWorkerAsync(id.Value);
                 }
            }
             return RedirectToAction("List");

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using App.BLL.DTOToDAL;
 using App.BLL.DALToDTO;
-
+using System.Threading.Tasks;
 
 namespace App.BLL.Services
 {
@@ -78,6 +78,31 @@ namespace App.BLL.Services
             {
                 Database.Positions.Delete(id);
             }
+        }
+
+        public async Task AddPositionAsync(PositionDTO item)
+        {
+            await Task.Run(() => AddPosition(item));
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetPositionsAsync()
+        {
+            return await Task.Run(() => GetPositions());
+        }
+
+        public async Task<IEnumerable<PositionDTO>> GetPositionByAsync(int id = 0, string name = "")
+        {
+            return await Task.Run(() => GetPositionBy(id, name));
+        }
+
+        public async Task UpdatePositionAsync(PositionDTO item)
+        {
+            await Task.Run(() => UpdatePosition(item));
+        }
+
+        public async Task DeletePositionAsync(int id)
+        {
+            await Task.Run(() => DeletePosition(id));
         }
     }
 }

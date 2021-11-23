@@ -28,12 +28,12 @@ namespace TestWork.Controllers
         /// <returns></returns>
         public async Task<IActionResult> List(CompanyViewModel company)
         {
-            var companies = _managerServices.CompanyService.GetCompanyBy(id: company.Id, name: company.Name);
+            var companies = await _managerServices.CompanyService.GetCompanyByAsync(id: company.Id, name: company.Name);
 
             List<CompanyViewModel> myCompanies = companies.ToList();
             foreach(CompanyViewModel compan in myCompanies)
             {
-                compan.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: compan.Id).ToList());
+                compan.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(companyId: compan.Id)).ToList());
             }
 
             return View(myCompanies);
@@ -45,9 +45,9 @@ namespace TestWork.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
+            ViewBag.FormTypes = new SelectList((await _managerServices.FormTypeService.GetFormTypesAsync()).ToList(), "Id", "Name");
             return View();
         }
 
@@ -56,11 +56,11 @@ namespace TestWork.Controllers
         {
             if (ModelState.IsValid)
             {
-                _managerServices.CompanyService.AddCompany(company.ToDTO());
+                await _managerServices.CompanyService.AddCompanyAsync(company.ToDTO());
 
                 return RedirectToAction("List");
             }
-            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
+            ViewBag.FormTypes = new SelectList((await _managerServices.FormTypeService.GetFormTypesAsync()).ToList(), "Id", "Name");
             return View(company);
         }
 
@@ -72,19 +72,19 @@ namespace TestWork.Controllers
         /// <returns></returns>
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id != null)
             {
-                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
+                var company = (await _managerServices.CompanyService.GetCompanyByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
+                company.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(companyId: company.Id)).ToList());
                 
-                ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
+                ViewBag.FormTypes = new SelectList((await _managerServices.FormTypeService.GetFormTypesAsync()).ToList(), "Id", "Name");
                 return View(company);
             }
             return RedirectToAction("List");
@@ -95,19 +95,19 @@ namespace TestWork.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_managerServices.WorkerService.GetWorkerBy(companyId: predId.Value).ToList().Count == 0)
+                if((await _managerServices.WorkerService.GetWorkerByAsync(companyId: predId.Value)).ToList().Count == 0)
                 {
-                    _managerServices.CompanyService.UpdateCompany(company.ToDTO(), predId);
+                    await _managerServices.CompanyService.UpdateCompanyAsync(company.ToDTO(), predId);
                     return RedirectToAction("List");
                 }
                 else
                 {
-                    _managerServices.CompanyService.UpdateCompany(company.ToDTO());
+                    await _managerServices.CompanyService.UpdateCompanyAsync(company.ToDTO());
                     return RedirectToAction("List");
                 }
             }
 
-            ViewBag.FormTypes = new SelectList(_managerServices.FormTypeService.GetFormTypes().ToList(), "Id", "Name");
+            ViewBag.FormTypes = new SelectList((await _managerServices.FormTypeService.GetFormTypesAsync()).ToList(), "Id", "Name");
             return View(company);
         }
 
@@ -116,12 +116,12 @@ namespace TestWork.Controllers
         /// Проверка индентификатора компании на уникальность
         /// </summary>
         /// <returns></returns>
-        public IActionResult CheckId(int? predId, int id)
+        public async Task<IActionResult> CheckId(int? predId, int id)
         {
             if (predId != null)
             {
-                var res1 = _managerServices.CompanyService.GetCompanyBy(id: predId.Value).GetFirst();
-                var res2 = _managerServices.CompanyService.GetCompanyBy(id: id).GetFirst();
+                var res1 = (await _managerServices.CompanyService.GetCompanyByAsync(id: predId.Value)).GetFirst();
+                var res2 = (await _managerServices.CompanyService.GetCompanyByAsync(id: id)).GetFirst();
                 if (res2 == null || res1.Id == res2?.Id)
                 {
                     return Json(true);
@@ -130,7 +130,7 @@ namespace TestWork.Controllers
             }
             else
             {
-                var res3 = _managerServices.CompanyService.GetCompanyBy(id: id).GetFirst();
+                var res3 = (await _managerServices.CompanyService.GetCompanyByAsync(id: id)).GetFirst();
                 if (res3 != null)
                     return Json(false);
                 return Json(true);
@@ -144,17 +144,17 @@ namespace TestWork.Controllers
         /// <param name="id">Индентификатор компании</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id != null)
             {
-                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
+                var company = (await _managerServices.CompanyService.GetCompanyByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
+                company.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(companyId: company.Id)).ToList());
                 if (company.Workers?.Count == 0)
                 {
                     return View(company);
@@ -169,17 +169,17 @@ namespace TestWork.Controllers
         {
             if (id != null)
             {
-                var company = _managerServices.CompanyService.GetCompanyBy(id: id.Value).GetFirst().ToViewModel();
+                var company = (await _managerServices.CompanyService.GetCompanyByAsync(id: id.Value)).GetFirst().ToViewModel();
                 if (company == null)
                 {
                     return RedirectToAction("List");
                 }
 
-                company.Workers.AddRange(_managerServices.WorkerService.GetWorkerBy(companyId: company.Id).ToList());
+                company.Workers.AddRange((await _managerServices.WorkerService.GetWorkerByAsync(companyId: company.Id)).ToList());
 
                 if (company.Workers?.Count == 0)
                 {
-                    _managerServices.WorkerService.DeleteWorker(id.Value);
+                    await _managerServices.WorkerService.DeleteWorkerAsync(id.Value);
                 }
                 else
                 {
