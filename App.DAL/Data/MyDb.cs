@@ -3,6 +3,9 @@ using App.DAL.Models;
 
 namespace App.DAL.Data
 {
+    /// <summary>
+    /// Представляет DbContext мой собственный
+    /// </summary>
     public class MyDb
     {
         private readonly string _connectionString;

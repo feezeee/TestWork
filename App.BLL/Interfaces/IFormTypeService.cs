@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace App.BLL.Interfaces
 {
+    /// <summary>
+    /// Сервис для работы со соответствующим репозиторием
+    /// </summary>
     public interface IFormTypeService
     {
         void AddFormType(FormTypeDTO item);

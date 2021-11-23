@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace App.BLL.Interfaces
 {
+    /// <summary>
+    /// Сервис для работы со соответствующим репозиторием
+    /// </summary>
     public interface ICompanyService
     {
         void AddCompany(CompanyDTO item);
