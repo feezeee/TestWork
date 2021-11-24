@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace TestWork.Models
 {
-    [Table("FormTypes")]
+    
     public class FormTypeViewModel
     {
-        [Column("Id")]
+        
         public int Id { get; set; }
 
-        [Column("Name")]
+        
         [Required(ErrorMessage = "Поле должно быть установлено")]
         [StringLength(32, ErrorMessage = "Длина строки должна быть до 32 символов")]
         [Remote(action: "CheckFormType", controller: "FormType", AdditionalFields = "Id", ErrorMessage = "ОПФ с таким наименованием уже существует!", HttpMethod = "POST")]

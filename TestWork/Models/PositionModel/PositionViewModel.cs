@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace TestWork.Models
 {
-    [Table("positions")]
+    
     public class PositionViewModel
     {
-        [Column("Id")]
+        
         public int Id { get; set; }
 
-        [Column("Name")]
+        
         [StringLength(32, ErrorMessage = "Длина строки должна быть до 32 символов")]
         [Required(ErrorMessage = "Поле должно быть установлено")]
         [Remote(action: "CheckPosition", controller: "Position", AdditionalFields = "Id", ErrorMessage = "Должность с таким наименованием уже существует!", HttpMethod = "POST")]

@@ -8,6 +8,11 @@ namespace App.BLL.Infrastructure
 {
     public static class BllServiceCollectionExtensions
     {        
+        /// <summary>
+        /// Метод расширения для подключения необходимых сервисов
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddBll(this IServiceCollection services)
         {
 
