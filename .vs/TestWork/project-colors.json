@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "5fb318fe-b064-4797-9c37-4f1213b5fd6b": {
+      "ProjectGuid": "5fb318fe-b064-4797-9c37-4f1213b5fd6b",
+      "DisplayName": "TestWork",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Прочие файлы",
+      "ColorIndex": -1
+    },
+    "ecf34635-65b5-4b76-83c2-157d7703a3d1": {
+      "ProjectGuid": "ecf34635-65b5-4b76-83c2-157d7703a3d1",
+      "DisplayName": "App.DAL",
+      "ColorIndex": 1
+    },
+    "d6505b37-e021-4e65-81c2-6a042b31c3e3": {
+      "ProjectGuid": "d6505b37-e021-4e65-81c2-6a042b31c3e3",
+      "DisplayName": "App.BLL",
+      "ColorIndex": 2
+    }
+  },
+  "NextColorIndex": 3
+}
