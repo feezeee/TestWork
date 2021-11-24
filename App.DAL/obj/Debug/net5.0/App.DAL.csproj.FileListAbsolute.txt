@@ -1,0 +1,12 @@
+C:\Users\densk\Source\Repos\TestWork\App.DAL\bin\Debug\net5.0\App.DAL.deps.json
+C:\Users\densk\Source\Repos\TestWork\App.DAL\bin\Debug\net5.0\App.DAL.dll
+C:\Users\densk\Source\Repos\TestWork\App.DAL\bin\Debug\net5.0\ref\App.DAL.dll
+C:\Users\densk\Source\Repos\TestWork\App.DAL\bin\Debug\net5.0\App.DAL.pdb
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.csproj.AssemblyReference.cache
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.AssemblyInfoInputs.cache
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.AssemblyInfo.cs
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.csproj.CoreCompileInputs.cache
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.dll
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\ref\App.DAL.dll
+C:\Users\densk\Source\Repos\TestWork\App.DAL\obj\Debug\net5.0\App.DAL.pdb

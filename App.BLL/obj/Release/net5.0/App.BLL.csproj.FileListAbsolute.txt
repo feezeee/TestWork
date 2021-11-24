@@ -1,0 +1,15 @@
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\App.BLL.deps.json
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\App.BLL.dll
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\ref\App.BLL.dll
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\App.BLL.pdb
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\App.DAL.dll
+C:\Users\densk\Source\Repos\TestWork\App.BLL\bin\Release\net5.0\App.DAL.pdb
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.csproj.AssemblyReference.cache
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.AssemblyInfoInputs.cache
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.AssemblyInfo.cs
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.csproj.CoreCompileInputs.cache
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.csproj.CopyComplete
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.dll
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\ref\App.BLL.dll
+C:\Users\densk\Source\Repos\TestWork\App.BLL\obj\Release\net5.0\App.BLL.pdb

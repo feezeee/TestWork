@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\densk\Source\Repos\TestWork\TestWork\bin\Release\net5.0\publish\</_PublishTargetUrl>
+    <History>True|2021-11-24T13:43:04.1583927Z;True|2021-11-24T16:30:24.9856449+03:00;True|2021-11-24T16:12:27.7698656+03:00;True|2021-11-24T16:11:50.7562394+03:00;True|2021-11-24T16:07:09.7907845+03:00;</History>
+  </PropertyGroup>
+</Project>
