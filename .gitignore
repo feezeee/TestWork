@@ -1,6 +1,7 @@
 ###################
 # compiled source #
 ###################
+!/publish/
 *.com
 *.class
 *.dll
